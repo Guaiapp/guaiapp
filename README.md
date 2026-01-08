@@ -1,16 +1,21 @@
-## Hi there 👋
+# GUA’Ĩ APP
 
-<!--
-**Guaiapp/guaiapp** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Aplicación inteligente para técnicos de aire acondicionado.
 
-Here are some ideas to get you started:
+## ¿Qué es GUA’Ĩ APP?
+GUA’Ĩ APP es una herramienta digital diseñada para ayudar a técnicos de climatización
+a crear presupuestos profesionales en minutos, organizar su trabajo y mejorar su productividad.
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+## Características (MVP)
+- Presupuestos profesionales en 1 minuto
+- Enfoque en técnicos de aire acondicionado
+- Interfaz simple y rápida
+- Pensada para uso en campo (móvil)
+
+## Estado del proyecto
+🚧 En desarrollo (MVP)
+
+## Desarrollado por
+**RHAB Tech**  
+División tecnológica de **RHAB International Trading**  
+Paraguay 🇵🇾
