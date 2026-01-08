@@ -1,121 +1,190 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GUA’Ĩ APP – MVP</title>
+  <meta charset="UTF-8">
+  <title>GUA’Ĩ APP – Presupuestos rápidos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
       font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fa;
       margin: 0;
-      background: linear-gradient(135deg, #0f4c75, #3282b8);
-      color: #fff;
+      padding: 0;
       text-align: center;
     }
 
     header {
-      padding: 40px 20px;
+      background: #ffffff;
+      padding: 30px 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
 
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+    header img {
+      display: block;
+      margin: 0 auto 15px;
+    }
+
+    header h1 {
+      margin: 5px 0;
+      font-size: 2rem;
+      color: #1f3c88;
+    }
+
+    header p {
+      margin: 5px 0 10px;
+      color: #555;
+      font-size: 1rem;
     }
 
     .tag {
-      background: orange;
-      color: #000;
       display: inline-block;
-      padding: 8px 20px;
+      background: #ff9800;
+      color: #fff;
+      padding: 5px 12px;
+      font-size: 0.8rem;
       border-radius: 20px;
-      font-weight: bold;
-      margin-top: 10px;
+      margin-top: 5px;
     }
 
     main {
-      background: #fff;
-      color: #000;
-      border-radius: 20px 20px 0 0;
       padding: 30px 20px;
     }
 
-    input, button {
-      width: 100%;
-      padding: 12px;
+    h2 {
+      color: #333;
+    }
+
+    input {
+      width: 90%;
+      max-width: 320px;
+      padding: 10px;
       margin: 8px 0;
       font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
     }
 
     button {
-      background: #0f4c75;
+      padding: 12px 25px;
+      margin-top: 15px;
+      font-size: 1rem;
+      background: #1f3c88;
       color: #fff;
       border: none;
-      font-weight: bold;
+      border-radius: 5px;
       cursor: pointer;
     }
 
     button:hover {
-      background: #3282b8;
+      background: #162e66;
     }
 
     .resultado {
       margin-top: 20px;
-      font-size: 1.2rem;
       font-weight: bold;
+      color: #1f3c88;
     }
 
     footer {
       margin-top: 30px;
       font-size: 0.9rem;
       color: #333;
+      padding-bottom: 25px;
+    }
+
+    footer a {
+      display: inline-block;
+      margin: 6px 0;
+      color: #1f3c88;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .direccion {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      color: #555;
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  <h1>GUA’Ĩ APP</h1>
-  <p>Da la vuelta a tu manera de trabajar</p>
-  <div class="tag">MVP EN DESARROLLO</div>
-</header>
+  <header>
+    <img src="logo-guaiapp.png" alt="Gua’i APP Logo" width="180">
+    <h1>GUA’Ĩ APP</h1>
+    <p>Da la vuelta a tu manera de trabajar</p>
+    <div class="tag">MVP EN DESARROLLO</div>
+  </header>
 
-<main>
-  <h2>Presupuesto rápido</h2>
+  <main>
+    <h2>Presupuesto rápido</h2>
 
-  <input type="text" id="cliente" placeholder="Nombre del cliente" />
-  <input type="text" id="servicio" placeholder="Servicio realizado" />
-  <input type="number" id="monto" placeholder="Monto del servicio (Gs)" />
+    <input type="text" id="cliente" placeholder="Nombre del cliente">
+    <input type="text" id="servicio" placeholder="Servicio a realizar">
+    <input type="number" id="monto" placeholder="Monto en Gs.">
 
-  <button onclick="generarPresupuesto()">Generar presupuesto</button>
+    <br>
+    <button onclick="generarPresupuesto()">Generar presupuesto</button>
 
-  <div class="resultado" id="resultado"></div>
+    <div class="resultado" id="resultado"></div>
+  </main>
 
   <footer>
-    Desarrollado por <strong>RHAB Tech</strong> – Paraguay 🇵🇾
+    <p>Desarrollado por <strong>RHAB Tech</strong></p>
+
+    <p>
+      📲 <a href="https://wa.me/595992755100" target="_blank">
+        WhatsApp Soporte
+      </a>
+    </p>
+
+    <p>
+      📧 <a href="mailto:guaiapp@rhabinternationaltrading.com">
+        guaiapp@rhabinternationaltrading.com
+      </a>
+    </p>
+
+    <p>
+      📧 <a href="mailto:support@rhabinternationaltrading.com">
+        support@rhabinternationaltrading.com
+      </a>
+    </p>
+
+    <p>
+      📍 <a href="https://www.google.com/maps/search/?api=1&query=Alberto+Sánchez+Benítez+9998+esquina+Porvenir+del+Norte+Barrio+Las+Mercedes+San+Lorenzo+Paraguay"
+         target="_blank">
+        RHAB INTERNATIONAL TRADING – Ver en Google Maps
+      </a>
+    </p>
+
+    <div class="direccion">
+      Alberto Sánchez Benítez 9998 esquina Porvenir del Norte<br>
+      Barrio Las Mercedes – San Lorenzo, Paraguay
+    </div>
   </footer>
-</main>
 
-<script>
-  function generarPresupuesto() {
-    const cliente = document.getElementById("cliente").value;
-    const servicio = document.getElementById("servicio").value;
-    const monto = document.getElementById("monto").value;
+  <script>
+    function generarPresupuesto() {
+      const cliente = document.getElementById("cliente").value;
+      const servicio = document.getElementById("servicio").value;
+      const monto = document.getElementById("monto").value;
 
-    if (!cliente || !servicio || !monto) {
-      alert("Completa todos los campos");
-      return;
+      if (!cliente || !servicio || !monto) {
+        document.getElementById("resultado").innerHTML =
+          "⚠️ Completá todos los campos.";
+        return;
+      }
+
+      document.getElementById("resultado").innerHTML =
+        "Presupuesto generado para <strong>" + cliente +
+        "</strong><br>Servicio: " + servicio +
+        "<br>Monto: <strong>Gs. " + monto + "</strong>";
     }
-
-    document.getElementById("resultado").innerHTML =
-      "Presupuesto para <br><strong>" + cliente + "</strong><br>" +
-      "Servicio: " + servicio + "<br>" +
-      "Monto total: <strong>Gs " + monto + "</strong>";
-  }
-</script>
+  </script>
 
 </body>
 </html>
