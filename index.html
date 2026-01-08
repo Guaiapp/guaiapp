@@ -3,103 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GUA’Ĩ APP</title>
+  <title>GUA’Ĩ APP – MVP</title>
 
   <style>
     body {
-      margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #0f4c81, #18a999);
-      color: #ffffff;
+      margin: 0;
+      background: linear-gradient(135deg, #0f4c75, #3282b8);
+      color: #fff;
       text-align: center;
     }
 
     header {
-      padding: 60px 20px;
-    }
-
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      font-weight: 300;
-      margin-bottom: 40px;
-    }
-
-    section {
-      background: #ffffff;
-      color: #333333;
       padding: 40px 20px;
     }
 
-    .card {
-      max-width: 800px;
-      margin: auto;
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
     }
 
-    ul {
-      list-style: none;
-      padding: 0;
+    .tag {
+      background: orange;
+      color: #000;
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      margin-top: 10px;
     }
 
-    ul li {
-      font-size: 1.1rem;
-      margin: 10px 0;
+    main {
+      background: #fff;
+      color: #000;
+      border-radius: 20px 20px 0 0;
+      padding: 30px 20px;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #0f4c75;
+      color: #fff;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #3282b8;
+    }
+
+    .resultado {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
     }
 
     footer {
-      padding: 20px;
+      margin-top: 30px;
       font-size: 0.9rem;
-      background: #0b3c5d;
-    }
-
-    .badge {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #ff9800;
-      color: #000;
-      border-radius: 25px;
-      font-weight: bold;
+      color: #333;
     }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <h1>GUA’Ĩ APP</h1>
-    <h2>Da la vuelta a tu manera de trabajar</h2>
-    <p>Presupuestos profesionales en un minuto</p>
-    <div class="badge">MVP en desarrollo</div>
-  </header>
+<header>
+  <h1>GUA’Ĩ APP</h1>
+  <p>Da la vuelta a tu manera de trabajar</p>
+  <div class="tag">MVP EN DESARROLLO</div>
+</header>
 
-  <section>
-    <div class="card">
-      <h2>¿Qué es GUA’Ĩ APP?</h2>
-      <p>
-        GUA’Ĩ APP es una aplicación inteligente pensada para técnicos
-        de aire acondicionado y climatización.
-        Ayuda a crear presupuestos profesionales en minutos,
-        organizar trabajos y mejorar la productividad en campo.
-      </p>
+<main>
+  <h2>Presupuesto rápido</h2>
 
-      <h2>Características principales</h2>
-      <ul>
-        <li>✅ Presupuestos profesionales en 1 minuto</li>
-        <li>✅ Enfocada en técnicos de aire acondicionado</li>
-        <li>✅ Interfaz simple, rápida y móvil</li>
-        <li>✅ Pensada para uso real en campo</li>
-      </ul>
-    </div>
-  </section>
+  <input type="text" id="cliente" placeholder="Nombre del cliente" />
+  <input type="text" id="servicio" placeholder="Servicio realizado" />
+  <input type="number" id="monto" placeholder="Monto del servicio (Gs)" />
+
+  <button onclick="generarPresupuesto()">Generar presupuesto</button>
+
+  <div class="resultado" id="resultado"></div>
 
   <footer>
-    Desarrollado por <strong>RHAB Tech</strong> · División tecnológica de RHAB International Trading<br/>
-    Paraguay 🇵🇾
+    Desarrollado por <strong>RHAB Tech</strong> – Paraguay 🇵🇾
   </footer>
+</main>
+
+<script>
+  function generarPresupuesto() {
+    const cliente = document.getElementById("cliente").value;
+    const servicio = document.getElementById("servicio").value;
+    const monto = document.getElementById("monto").value;
+
+    if (!cliente || !servicio || !monto) {
+      alert("Completa todos los campos");
+      return;
+    }
+
+    document.getElementById("resultado").innerHTML =
+      "Presupuesto para <br><strong>" + cliente + "</strong><br>" +
+      "Servicio: " + servicio + "<br>" +
+      "Monto total: <strong>Gs " + monto + "</strong>";
+  }
+</script>
 
 </body>
 </html>
