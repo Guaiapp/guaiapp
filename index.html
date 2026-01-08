@@ -101,6 +101,7 @@
       margin-top: 8px;
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 
 <body>
@@ -120,6 +121,9 @@
     <input type="number" id="monto" placeholder="Monto en Gs.">
 
     <button onclick="generarPresupuesto()">Generar presupuesto</button>
+    <button onclick="descargarPDF()" style="margin-top:10px; background:#28a745;">
+  📄 Descargar PDF
+    </button>
 
     <!-- BOTÓN DESCARGA APP -->
     <button id="installBtn">📥 Descargar Gua’ĩ APP</button>
@@ -170,6 +174,33 @@
       installBtn.style.display = "none";
     });
   </script>
+  <script>
+function descargarPDF() {
+  const cliente = document.getElementById("cliente").value;
+  const servicio = document.getElementById("servicio").value;
+  const monto = document.getElementById("monto").value;
 
+  if (!cliente || !servicio || !monto) {
+    alert("Completá todos los campos antes de descargar el PDF");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.setFontSize(18);
+  doc.text("GUA’Ĩ APP – Presupuesto", 20, 20);
+
+  doc.setFontSize(12);
+  doc.text(`Cliente: ${cliente}`, 20, 40);
+  doc.text(`Servicio: ${servicio}`, 20, 50);
+  doc.text(`Monto: Gs. ${monto}`, 20, 60);
+
+  doc.text("Desarrollado por RHAB Tech", 20, 90);
+
+  doc.save(`Presupuesto-${cliente}.pdf`);
+}
+  </script>
+  
 </body>
 </html>
