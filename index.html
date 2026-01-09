@@ -2,89 +2,33 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>GUA’Ĩ APP – Empresa</title>
+<title>GUA’Ĩ APP – Presupuestos</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{
-  font-family:Arial;
-  background:#f4f6f9;
-  margin:0;
-  padding:20px;
-}
-
-/* HEADER LOGO */
-.app-header{
-  text-align:center;
-  margin-bottom:15px;
-}
-.app-header img{
-  width:140px;
-  max-width:80%;
-  margin-bottom:6px;
-}
-.app-header h1{
-  margin:0;
-  color:#1f3c88;
-}
-
-/* CAJA */
-.box{
-  background:#fff;
-  padding:20px;
-  border-radius:10px;
-  max-width:620px;
-  margin:auto;
-  box-shadow:0 5px 15px rgba(0,0,0,.1);
-}
-
-input,button{
-  width:100%;
-  padding:10px;
-  margin:6px 0;
-  font-size:15px;
-  border-radius:6px;
-  border:1px solid #ccc;
-}
-
-.service{
-  border-bottom:1px solid #eee;
-  margin-bottom:6px;
-  padding-bottom:6px;
-}
-
-.total{
-  font-weight:bold;
-  font-size:18px;
-  margin-top:10px;
-}
-
+body{font-family:Arial;background:#f4f6f9;margin:0;padding:20px}
+header{text-align:center;margin-bottom:15px}
+header img{width:140px;margin-bottom:5px}
+header h1{margin:0;color:#1f3c88}
+.box{background:#fff;padding:20px;border-radius:10px;max-width:650px;margin:auto;box-shadow:0 5px 15px rgba(0,0,0,.1)}
+input,button{width:100%;padding:10px;margin:6px 0;font-size:15px;border-radius:6px;border:1px solid #ccc}
+.service{border-bottom:1px solid #eee;padding-bottom:6px;margin-bottom:6px}
 button{background:#1f3c88;color:#fff;border:none}
 button.pdf{background:#28a745}
 button.wa{background:#25D366}
-button.add{background:#6c757d}
-
-/* FIRMA TÁCTIL FIX */
-canvas{
-  border:1px solid #ccc;
-  border-radius:6px;
-  touch-action:none;
-}
-
-footer{
-  text-align:center;
-  margin-top:20px;
-  font-size:14px;
-}
+button.sec{background:#6c757d}
+canvas{border:1px solid #ccc;border-radius:6px;touch-action:none}
+.total{font-weight:bold;font-size:18px;margin-top:10px}
+ul{padding-left:18px}
+footer{text-align:center;margin-top:20px;font-size:14px}
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<header class="app-header">
-  <img src="logo-guaiapp.png" alt="Gua'ì APP Logo">
-  <h1>GUA’Ĩ APP – EMPRESA</h1>
+<header>
+  <img src="logo-guaiapp.png" alt="GUA’Ĩ APP">
+  <h1>GUA’Ĩ APP – Empresa</h1>
 </header>
 
 <div class="box">
@@ -95,41 +39,30 @@ Email: guaiapp@rhabinternationaltrading.com
 <hr>
 
 <input id="tecnico" placeholder="Nombre del técnico">
-<input id="telTecnico" placeholder="Teléfono del técnico">
 <input id="cliente" placeholder="Nombre del cliente">
 
 <h3>Servicios</h3>
 
 <div class="service">
 <label><input type="checkbox" data-nombre="Mantenimiento preventivo"> Mantenimiento preventivo</label>
-<input type="number" class="precio" placeholder="Precio Gs."> 
+<input type="number" placeholder="Precio Gs." class="precio">
 </div>
 
 <div class="service">
 <label><input type="checkbox" data-nombre="Mantenimiento correctivo"> Mantenimiento correctivo</label>
-<input type="number" class="precio" placeholder="Precio Gs.">
+<input type="number" placeholder="Precio Gs." class="precio">
 </div>
 
 <div class="service">
 <label><input type="checkbox" data-nombre="Carga de gas"> Carga de gas</label>
-<input type="number" class="precio" placeholder="Precio Gs.">
-</div>
-
-<div class="service">
-<label><input type="checkbox" data-nombre="Instalación equipo nuevo"> Instalación equipo nuevo</label>
-<input type="number" class="precio" placeholder="Precio Gs.">
-</div>
-
-<div class="service">
-<label><input type="checkbox" data-nombre="Desinstalación de equipo"> Desinstalación de equipo</label>
-<input type="number" class="precio" placeholder="Precio Gs.">
+<input type="number" placeholder="Precio Gs." class="precio">
 </div>
 
 <h3>Otros servicios</h3>
-<input id="otroNombre" placeholder="Descripción del servicio">
+<input id="otroNombre" placeholder="Descripción">
 <input id="otroPrecio" type="number" placeholder="Precio Gs.">
-<button class="add" onclick="agregarOtro()">➕ Agregar servicio</button>
-<ul id="listaOtros"></ul>
+<button class="sec" onclick="agregarOtro()">Agregar</button>
+<ul id="otrosLista"></ul>
 
 <h3>Descuento</h3>
 <input id="descuento" type="number" placeholder="Descuento en Gs.">
@@ -139,185 +72,146 @@ Email: guaiapp@rhabinternationaltrading.com
 
 <h3>Firma del técnico</h3>
 <canvas id="firmaTec" width="500" height="120"></canvas>
-<button onclick="limpiarFirma('firmaTec')">Limpiar firma técnico</button>
+<button class="sec" onclick="limpiarFirma('firmaTec')">Limpiar firma</button>
 
 <h3>Firma del cliente</h3>
 <canvas id="firmaCli" width="500" height="120"></canvas>
-<button onclick="limpiarFirma('firmaCli')">Limpiar firma cliente</button>
+<button class="sec" onclick="limpiarFirma('firmaCli')">Limpiar firma</button>
 
-<button onclick="calcular()">Calcular total</button>
+<button onclick="calcular()">Calcular</button>
 <button class="pdf" onclick="descargarPDF()">Descargar PDF</button>
-<button class="wa" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
-  <hr>
-<h3>Historial de presupuestos</h3>
-<button onclick="verHistorial()">Ver historial</button>
-<button onclick="exportarCSV()">Exportar CSV</button>
+<button class="wa" onclick="enviarWhatsApp()">Enviar WhatsApp</button>
+
+<hr>
+<h3>Historial</h3>
+<button class="sec" onclick="verHistorial()">Ver historial</button>
+<button class="sec" onclick="exportarCSV()">Exportar CSV</button>
 <ul id="historial"></ul>
 
 </div>
 
-<footer>
-GUA’Ĩ APP · RHAB Tech · Uso empresarial
-</footer>
+<footer>GUA’Ĩ APP · RHAB Tech</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-/* NUMERACIÓN */
-let nro = localStorage.getItem("empresa_presupuesto") || 0;
-nro++;
-localStorage.setItem("empresa_presupuesto", nro);
+/* ===== VARIABLES ===== */
+let otros = [];
+let detalle = [];
+let total = 0;
+let nro = Number(localStorage.getItem("nro_presupuesto") || 0) + 1;
+localStorage.setItem("nro_presupuesto", nro);
 
-/* FIRMA PRO */
+/* ===== FIRMA ===== */
 function activarFirma(id){
-  const canvas=document.getElementById(id);
-  const ctx=canvas.getContext("2d");
-  ctx.lineWidth=2; ctx.lineCap="round";
-  let draw=false;
-
-  canvas.addEventListener("touchstart",e=>{
-    e.preventDefault(); draw=true;
-    const t=e.touches[0],r=canvas.getBoundingClientRect();
-    ctx.beginPath();
-    ctx.moveTo(t.clientX-r.left,t.clientY-r.top);
+  const c=document.getElementById(id),ctx=c.getContext("2d");
+  let d=false; ctx.lineWidth=2; ctx.lineCap="round";
+  c.addEventListener("touchstart",e=>{e.preventDefault();d=true;
+    const t=e.touches[0],r=c.getBoundingClientRect();
+    ctx.beginPath();ctx.moveTo(t.clientX-r.left,t.clientY-r.top);
   },{passive:false});
-
-  canvas.addEventListener("touchmove",e=>{
-    if(!draw) return;
-    e.preventDefault();
-    const t=e.touches[0],r=canvas.getBoundingClientRect();
-    ctx.lineTo(t.clientX-r.left,t.clientY-r.top);
-    ctx.stroke();
+  c.addEventListener("touchmove",e=>{
+    if(!d)return; e.preventDefault();
+    const t=e.touches[0],r=c.getBoundingClientRect();
+    ctx.lineTo(t.clientX-r.left,t.clientY-r.top);ctx.stroke();
   },{passive:false});
-
-  canvas.addEventListener("touchend",e=>{
-    e.preventDefault(); draw=false;
-  },{passive:false});
+  c.addEventListener("touchend",()=>d=false);
 }
-activarFirma("firmaTec");
-activarFirma("firmaCli");
-
+activarFirma("firmaTec"); activarFirma("firmaCli");
 function limpiarFirma(id){
   const c=document.getElementById(id);
   c.getContext("2d").clearRect(0,0,c.width,c.height);
 }
 
-/* SERVICIOS */
-let otros=[], total=0, detalle=[];
-
+/* ===== SERVICIOS ===== */
 function agregarOtro(){
-  if(!otroNombre.value||!otroPrecio.value) return alert("Completa servicio y precio");
-  otros.push({n:otroNombre.value,p:otroPrecio.value});
-  listaOtros.innerHTML+=`<li>${otroNombre.value} – Gs. ${otroPrecio.value}</li>`;
+  if(!otroNombre.value||!otroPrecio.value)return;
+  otros.push({n:otroNombre.value,p:Number(otroPrecio.value)});
+  otrosLista.innerHTML+=`<li>${otroNombre.value} – Gs. ${otroPrecio.value}</li>`;
   otroNombre.value=""; otroPrecio.value="";
 }
 
 function calcular(){
   total=0; detalle=[];
   document.querySelectorAll(".service").forEach(s=>{
-    const c=s.querySelector("input[type=checkbox]");
+    const chk=s.querySelector("input[type=checkbox]");
     const p=s.querySelector(".precio").value;
-    if(c.checked && p){ total+=+p; detalle.push(`${c.dataset.nombre} – Gs. ${p}`); }
+    if(chk.checked && p){
+      total+=Number(p);
+      detalle.push(`${chk.dataset.nombre} – Gs. ${p}`);
+    }
   });
-  otros.forEach(o=>{ total+=+o.p; detalle.push(`${o.n} – Gs. ${o.p}`); });
-  total -= (+descuento.value||0);
+  otros.forEach(o=>{total+=o.p;detalle.push(`${o.n} – Gs. ${o.p}`);});
+  total-=Number(descuento.value||0);
   if(iva.checked) total*=1.10;
   total=Math.round(total);
   document.getElementById("total").innerText="Total: Gs. "+total;
 }
 
-/* PDF */
+/* ===== PDF ===== */
 function descargarPDF(){
-  calcular(); // 🔑 asegura detalle y total actualizados
+  calcular();
+  if(!detalle.length)return alert("Agregá servicios");
 
-  if(!detalle.length){
-    alert("Agregá servicios");
-    return;
-  }
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF();
+  doc.text("PRESUPUESTO DE SERVICIO",20,20);
+  doc.text("N° "+nro,160,20);
+  doc.text("Cliente: "+cliente.value,20,35);
+  doc.text("Técnico: "+tecnico.value,20,42);
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+  let y=60;
+  doc.text("Trabajos realizados:",20,y); y+=8;
+  detalle.forEach((d,i)=>{doc.text(`${i+1}. ${d}`,22,y);y+=7;});
 
-  doc.text("PRESUPUESTO DE SERVICIO", 20, 20);
-  doc.text("N° " + nro, 160, 20);
-  doc.text("Cliente: " + cliente.value, 20, 35);
-  doc.text("Técnico: " + tecnico.value, 20, 42);
+  doc.text("TOTAL: Gs. "+total,20,y+6);
+  doc.addImage(firmaTec.toDataURL(),"PNG",20,y+15,70,25);
+  doc.addImage(firmaCli.toDataURL(),"PNG",110,y+15,70,25);
 
-  let y = 60;
-  doc.text("Detalle de trabajos:", 20, y);
-  y += 8;
-
-  detalle.forEach((d, i) => {
-    doc.text((i+1) + ". " + d, 22, y);
-    y += 7;
-  });
-
-  doc.text("TOTAL: Gs. " + total, 20, y + 6);
-
-  doc.addImage(firmaTec.toDataURL(), "PNG", 20, y + 15, 70, 25);
-  doc.addImage(firmaCli.toDataURL(), "PNG", 110, y + 15, 70, 25);
-
-  guardarEnHistorial(); // ✅ GUARDA SIEMPRE
-
-  doc.save("Presupuesto_" + nro + ".pdf");
+  guardarHistorial();
+  doc.save("Presupuesto_"+nro+".pdf");
 }
 
-/* WHATSAPP */
-function enviarWhatsApp(){
-  const msg=`RHAB INTERNATIONAL TRADING%0APresupuesto N° ${nro}%0ACliente: ${cliente.value}%0ATotal: Gs. ${total}`;
-  window.open(`https://wa.me/?text=${msg}`);
-  /* ===== HISTORIAL OFFLINE (PASO 3.1) ===== */
-const KEY_HISTORIAL = "guaiapp_historial";
-
-function guardarEnHistorial() {
-  const item = {
-    nro,
-    cliente: cliente.value || "",
-    tecnico: tecnico.value || "",
-    fecha: new Date().toLocaleString(),
-    total
-  };
-
-  const historial = JSON.parse(localStorage.getItem(KEY_HISTORIAL) || "[]");
-  historial.push(item);
-  localStorage.setItem(KEY_HISTORIAL, JSON.stringify(historial));
+/* ===== HISTORIAL ===== */
+const KEY="historial_guaiapp";
+function guardarHistorial(){
+  const h=JSON.parse(localStorage.getItem(KEY)||"[]");
+  h.push({nro,fecha:new Date().toLocaleString(),cliente:cliente.value,tecnico:tecnico.value,total});
+  localStorage.setItem(KEY,JSON.stringify(h));
 }
-
-function verHistorial() {
-  const ul = document.getElementById("historial");
-  ul.innerHTML = "";
-  const historial = JSON.parse(localStorage.getItem(KEY_HISTORIAL) || "[]");
-
-  if (!historial.length) {
-    ul.innerHTML = "<li>No hay presupuestos guardados.</li>";
-    return;
-  }
-
-  historial.slice().reverse().forEach(h => {
-    const li = document.createElement("li");
-    li.textContent = `#${h.nro} | ${h.fecha} | ${h.cliente} | Gs. ${h.total}`;
-    ul.appendChild(li);
+function verHistorial(){
+  historial.innerHTML="";
+  const h=JSON.parse(localStorage.getItem(KEY)||"[]");
+  h.reverse().forEach(i=>{
+    historial.innerHTML+=`<li>#${i.nro} | ${i.fecha} | ${i.cliente} | Gs. ${i.total}</li>`;
   });
 }
-
-/* ===== EXPORTAR CSV (LIVIANO) ===== */
-function exportarCSV() {
-  const historial = JSON.parse(localStorage.getItem(KEY_HISTORIAL) || "[]");
-  if (!historial.length) return alert("No hay datos para exportar");
-
-  const encabezado = "Nro,Fecha,Cliente,Tecnico,Total\n";
-  const filas = historial
-    .map(h => `${h.nro},"${h.fecha}","${h.cliente}","${h.tecnico}",${h.total}`)
-    .join("\n");
-
-  const blob = new Blob([encabezado + filas], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "historial_presupuestos.csv";
+function exportarCSV(){
+  const h=JSON.parse(localStorage.getItem(KEY)||"[]");
+  if(!h.length)return;
+  let csv="Nro,Fecha,Cliente,Tecnico,Total\n";
+  h.forEach(i=>{csv+=`${i.nro},"${i.fecha}","${i.cliente}","${i.tecnico}",${i.total}\n`;});
+  const blob=new Blob([csv],{type:"text/csv"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="historial.csv";
   a.click();
-  URL.revokeObjectURL(url);
 }
+
+/* ===== WHATSAPP ===== */
+function enviarWhatsApp(){
+  calcular();
+  if(!detalle.length)return alert("Agregá servicios");
+  let txt=detalle.map((d,i)=>`${i+1}. ${d}`).join("\n");
+  const msg=`RHAB INTERNATIONAL TRADING
+Presupuesto N° ${nro}
+Cliente: ${cliente.value}
+
+Trabajos realizados:
+${txt}
+
+TOTAL: Gs. ${total}`;
+  window.open("https://wa.me/?text="+encodeURIComponent(msg));
 }
 </script>
 
