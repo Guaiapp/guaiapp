@@ -6,200 +6,175 @@
 <title>GUA’Ĩ APP | Presupuesto Técnico</title>
 
 <link rel="manifest" href="manifiesto.json">
-<meta name="theme-color" content="#0b5ed7">
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
-:root{ --primary:#0b5ed7; --green:#28a745; --gray:#6c757d; --bg:#f4f6f8; }
-body{ margin:0; font-family:system-ui,Arial; background:var(--bg); }
+body{font-family:Arial,Helvetica,sans-serif;background:#f4f6f8;margin:0}
+.hidden{display:none}
 
-#app-container{
-  max-width:800px;
-  margin:0 auto;
+/* ===================== APP ===================== */
+#app{max-width:800px;margin:auto;background:#fff}
+.header{background:#0b5ed7;color:#fff;text-align:center;padding:20px}
+.header img{height:80px}
+.card{padding:16px;margin:16px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+input{width:100%;padding:8px;margin-top:6px}
+button{width:100%;padding:14px;margin-top:10px;border:none;border-radius:8px;font-weight:bold}
+
+/* ===================== PDF ===================== */
+#pdf{
+  width:210mm;
+  min-height:297mm;
+  padding:20mm;
   background:#fff;
+  color:#000;
 }
 
-.header{
-  background:var(--primary);
-  color:#fff;
-  text-align:center;
-  padding:20px;
-}
-.header img{ width:240px; }
-
-.container{ padding:20px; }
-
-.card{
-  background:#fff;
-  border-radius:12px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 2px 6px rgba(0,0,0,.08);
-}
-
-h2{ color:var(--primary); font-size:16px; margin:0 0 10px 0; }
-
-input{
+#pdf table{
   width:100%;
-  padding:10px;
-  margin-top:6px;
-  border-radius:8px;
-  border:1px solid #ccc;
+  border-collapse:collapse;
+  font-size:12px;
 }
 
-.service-row{
+#pdf th,#pdf td{
+  border:1px solid #444;
+  padding:6px;
+}
+
+.pdf-header{
   display:flex;
-  gap:10px;
+  justify-content:space-between;
   align-items:center;
-  margin-top:10px;
-}
-.service-desc{ flex:1; }
-.service-price{ width:120px; }
-
-.total-box{
-  margin-top:15px;
-  border-top:1px solid #eee;
-  padding-top:10px;
-}
-.total{ font-size:18px; font-weight:bold; }
-
-.btn{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:10px;
-  margin-top:10px;
-  font-weight:600;
-  cursor:pointer;
-}
-.btn-blue{ background:var(--primary); color:#fff; }
-.btn-green{ background:var(--green); color:#fff; }
-.btn-gray{ background:var(--gray); color:#fff; }
-
-.footer{
-  text-align:center;
-  font-size:11px;
-  color:#444;
-  padding:20px;
-  border-top:1px solid #ddd;
+  margin-bottom:10px;
 }
 
-.pdf-bg{ background:#fff !important; }
+.pdf-header img{height:70px}
+
+.pdf-footer{
+  font-size:10px;
+  margin-top:20px;
+  border-top:1px solid #000;
+  padding-top:8px;
+}
 </style>
 </head>
 
 <body>
 
-<div id="app-container">
+<!-- ===================== APP ===================== -->
+<div id="app">
+  <div class="header">
+    <img src="logotipo-guaiapp.png">
+    <div>PRESUPUESTO TÉCNICO</div>
+  </div>
 
-<div class="header">
-  <img src="logotipo-guaiapp.png">
-  <div>PRESUPUESTO TÉCNICO DE CLIMATIZACIÓN</div>
-</div>
+  <div class="card">
+    <input id="cliente" placeholder="Cliente">
+    <input id="rucCliente" placeholder="RUC Cliente">
+    <input id="telCliente" placeholder="Teléfono Cliente">
+    <input id="tecnico" placeholder="Técnico">
+    <input id="telTecnico" placeholder="Teléfono Técnico">
+    <input id="empresa" placeholder="Empresa / Taller">
+  </div>
 
-<div class="container">
+  <div class="card">
+    <input id="s1" placeholder="Mantenimiento preventivo Gs">
+    <input id="s2" placeholder="Mantenimiento correctivo Gs">
+    <input id="s3" placeholder="Carga de gas Gs">
+    <input id="desc_otro" placeholder="Otro servicio">
+    <input id="s4" placeholder="Precio otro servicio">
+  </div>
 
-<div class="card">
-  <b>N° Presupuesto:</b> <span id="numPresupuesto"></span><br>
-  <b>Fecha emisión:</b> <span id="fecha"></span><br>
-  <b>Válido hasta:</b> <span id="vencimiento"></span>
-</div>
-
-<div class="card">
-  <h2>Datos</h2>
-  <input id="cliente" placeholder="Cliente">
-  <input id="ruc" placeholder="RUC / CI Cliente">
-  <input id="tecnico" placeholder="Técnico responsable">
-  <input id="empresa" placeholder="Empresa / Taller">
-</div>
-
-<div class="card">
-  <h2>Servicios</h2>
-
-  <div class="service-row"><input type="checkbox">
-    <div class="service-desc">Mantenimiento preventivo</div>
-    <input id="s1" class="service-price" type="number"></div>
-
-  <div class="service-row"><input type="checkbox">
-    <div class="service-desc">Mantenimiento correctivo</div>
-    <input id="s2" class="service-price" type="number"></div>
-
-  <div class="service-row"><input type="checkbox">
-    <div class="service-desc">Carga de gas</div>
-    <input id="s3" class="service-price" type="number"></div>
-
-  <div class="service-row"><input type="checkbox">
-    <div class="service-desc">
-      Otro servicio<br>
-      <input id="desc_otro" placeholder="Descripción">
-    </div>
-    <input id="s4" class="service-price" type="number"></div>
-
-  <div class="total-box">
-    <div class="total">Total: Gs. <span id="total">0</span></div>
-    IVA (10%) incluido: Gs. <span id="iva">0</span>
+  <div class="card">
+    <button style="background:#0b5ed7;color:#fff" onclick="calc()">Calcular</button>
+    <button style="background:#28a745;color:#fff" onclick="exportPDF()">Descargar PDF Profesional</button>
   </div>
 </div>
 
-<div class="card" data-html2canvas-ignore="true">
-  <button class="btn btn-blue" onclick="calc()">Actualizar total</button>
-  <button class="btn btn-green" onclick="downloadPDF()">Descargar PDF</button>
-  <button class="btn btn-green" onclick="sendWhats()">Enviar por WhatsApp</button>
-</div>
+<!-- ===================== PDF ===================== -->
+<div id="pdf" class="hidden">
 
-</div>
+  <div class="pdf-header">
+    <img src="logotipo-guaiapp.png">
+    <div style="text-align:right">
+      <b>Presupuesto Nº:</b> <span id="pdfNum"></span><br>
+      <b>Fecha:</b> <span id="pdfFecha"></span><br>
+      <b>Válido hasta:</b> <span id="pdfVence"></span>
+    </div>
+  </div>
 
-<div class="footer">
-<b>Garantía:</b> 7 días sobre el servicio realizado. No incluye repuestos.<br><br>
+  <table>
+    <tr><td><b>Cliente</b></td><td id="pdfCliente"></td></tr>
+    <tr><td><b>RUC</b></td><td id="pdfRuc"></td></tr>
+    <tr><td><b>Teléfono</b></td><td id="pdfTelCliente"></td></tr>
+    <tr><td><b>Técnico</b></td><td id="pdfTecnico"></td></tr>
+    <tr><td><b>Tel. Técnico</b></td><td id="pdfTelTecnico"></td></tr>
+    <tr><td><b>Empresa</b></td><td id="pdfEmpresa"></td></tr>
+  </table>
 
-<b>RHAB Tech</b> – División Tecnológica de<br>
-<b>RHAB INTERNATIONAL TRADING</b><br>
-San Lorenzo – Paraguay<br>
-Alberto Sánchez Benítez 9998<br>
-Barrio Las Mercedes<br><br>
-📧 guaiapp@rhabinternationaltrading.com<br>
-📧 info@rhabinternationaltrading.com
-</div>
+  <br>
+
+  <table>
+    <tr>
+      <th>Descripción</th>
+      <th>Precio (Gs)</th>
+    </tr>
+    <tr><td>Mantenimiento preventivo</td><td id="p1"></td></tr>
+    <tr><td>Mantenimiento correctivo</td><td id="p2"></td></tr>
+    <tr><td>Carga de gas</td><td id="p3"></td></tr>
+    <tr><td id="pDesc"></td><td id="p4"></td></tr>
+    <tr>
+      <td><b>TOTAL</b></td>
+      <td><b id="pTotal"></b></td>
+    </tr>
+  </table>
+
+  <p><b>Garantía:</b> 7 días sobre el servicio realizado. No incluye repuestos.</p>
+
+  <div class="pdf-footer">
+    RHAB Tech – División tecnológica de RHAB INTERNATIONAL TRADING<br>
+    San Lorenzo – Paraguay | Alberto Sánchez Benítez 9998<br>
+    Barrio Las Mercedes<br>
+    📧 guaiapp@rhabinternationaltrading.com
+  </div>
 
 </div>
 
 <script>
-function generarNumero(){
- let c = Number(localStorage.getItem("guai_cont")||0)+1;
- localStorage.setItem("guai_cont",c);
- let f = new Date();
- return `GUA-${f.getFullYear()}${(f.getMonth()+1).toString().padStart(2,"0")}${f.getDate().toString().padStart(2,"0")}-${c.toString().padStart(4,"0")}`;
-}
-
-const hoy = new Date();
-const venc = new Date(hoy); venc.setDate(hoy.getDate()+7);
-
-numPresupuesto.innerText = generarNumero();
-fecha.innerText = hoy.toLocaleDateString();
-vencimiento.innerText = venc.toLocaleDateString();
-
 function calc(){
- let sum=0;
- ["s1","s2","s3","s4"].forEach(id=>{
-   let v=Number(document.getElementById(id).value||0);
-   sum+=v;
- });
- total.innerText=sum.toLocaleString("es-PY");
- iva.innerText=Math.round(sum/11).toLocaleString("es-PY");
+  let t=(+s1.value||0)+(+s2.value||0)+(+s3.value||0)+(+s4.value||0);
+  alert("Total: Gs "+t.toLocaleString("es-PY"));
 }
 
-function downloadPDF(){
- document.getElementById("app-container").classList.add("pdf-bg");
- html2pdf().from(document.getElementById("app-container")).save();
-}
+function exportPDF(){
+  const n="GUA-"+Date.now();
+  const f=new Date();
+  const v=new Date();v.setDate(f.getDate()+7);
 
-function sendWhats(){
- let msg=`*PRESUPUESTO ${numPresupuesto.innerText}*\nCliente: ${cliente.value}\nRUC: ${ruc.value}\nTotal: Gs. ${total.innerText}\nVálido hasta: ${vencimiento.innerText}\nGarantía: 7 días`;
- window.open("https://wa.me/?text="+encodeURIComponent(msg));
-}
+  pdfNum.innerText=n;
+  pdfFecha.innerText=f.toLocaleDateString();
+  pdfVence.innerText=v.toLocaleDateString();
 
-if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js"); }
+  pdfCliente.innerText=cliente.value;
+  pdfRuc.innerText=rucCliente.value;
+  pdfTelCliente.innerText=telCliente.value;
+  pdfTecnico.innerText=tecnico.value;
+  pdfTelTecnico.innerText=telTecnico.value;
+  pdfEmpresa.innerText=empresa.value;
+
+  p1.innerText=s1.value;
+  p2.innerText=s2.value;
+  p3.innerText=s3.value;
+  pDesc.innerText=desc_otro.value;
+  p4.innerText=s4.value;
+
+  pTotal.innerText=((+s1.value||0)+(+s2.value||0)+(+s3.value||0)+(+s4.value||0)).toLocaleString("es-PY");
+
+  document.getElementById("pdf").classList.remove("hidden");
+
+  html2pdf().from(pdf).save("Presupuesto_"+n+".pdf").then(()=>{
+    document.getElementById("pdf").classList.add("hidden");
+  });
+}
 </script>
 
 </body>
