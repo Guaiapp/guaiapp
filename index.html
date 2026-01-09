@@ -2,77 +2,148 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>GUA´I APP – Presupuesto PRO</title>
+<title>GUA’Ĩ APP – Empresa</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body{font-family:Arial;background:#f4f6f9;margin:0;padding:20px}
-h1{text-align:center;color:#1f3c88}
-.box{background:#fff;padding:20px;border-radius:10px;max-width:560px;margin:auto;box-shadow:0 5px 15px rgba(0,0,0,.1)}
-input,button{width:100%;padding:10px;margin:6px 0;font-size:15px;border-radius:6px;border:1px solid #ccc}
-.service{border-bottom:1px solid #eee;padding-bottom:6px;margin-bottom:6px}
-.total{font-weight:bold;font-size:18px;margin-top:10px}
+body{
+  font-family:Arial;
+  background:#f4f6f9;
+  margin:0;
+  padding:20px;
+}
+
+/* HEADER LOGO */
+.app-header{
+  text-align:center;
+  margin-bottom:15px;
+}
+.app-header img{
+  width:140px;
+  max-width:80%;
+  margin-bottom:6px;
+}
+.app-header h1{
+  margin:0;
+  color:#1f3c88;
+}
+
+/* CAJA */
+.box{
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  max-width:620px;
+  margin:auto;
+  box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+input,button{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  font-size:15px;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+.service{
+  border-bottom:1px solid #eee;
+  margin-bottom:6px;
+  padding-bottom:6px;
+}
+
+.total{
+  font-weight:bold;
+  font-size:18px;
+  margin-top:10px;
+}
+
 button{background:#1f3c88;color:#fff;border:none}
 button.pdf{background:#28a745}
 button.wa{background:#25D366}
 button.add{background:#6c757d}
-canvas{border:1px solid #ccc;border-radius:6px}
-footer{text-align:center;margin-top:20px;font-size:14px}
+
+/* FIRMA TÁCTIL FIX */
+canvas{
+  border:1px solid #ccc;
+  border-radius:6px;
+  touch-action:none;
+}
+
+footer{
+  text-align:center;
+  margin-top:20px;
+  font-size:14px;
+}
 </style>
 </head>
 
 <body>
 
-<h1>GUA´I APP</h1>
+<!-- HEADER -->
+<header class="app-header">
+  <img src="logo-guaiapp.png" alt="Gua'ì APP Logo">
+  <h1>GUA’Ĩ APP – EMPRESA</h1>
+</header>
 
 <div class="box">
 
+<strong>RHAB INTERNATIONAL TRADING</strong><br>
+WhatsApp: +595 992 755 100<br>
+Email: guaiapp@rhabinternationaltrading.com
+<hr>
+
+<input id="tecnico" placeholder="Nombre del técnico">
+<input id="telTecnico" placeholder="Teléfono del técnico">
 <input id="cliente" placeholder="Nombre del cliente">
 
 <h3>Servicios</h3>
 
 <div class="service">
 <label><input type="checkbox" data-nombre="Mantenimiento preventivo"> Mantenimiento preventivo</label>
-<input type="number" placeholder="Precio Gs." class="precio">
+<input type="number" class="precio" placeholder="Precio Gs.">
 </div>
 
 <div class="service">
 <label><input type="checkbox" data-nombre="Mantenimiento correctivo"> Mantenimiento correctivo</label>
-<input type="number" placeholder="Precio Gs." class="precio">
+<input type="number" class="precio" placeholder="Precio Gs.">
 </div>
 
 <div class="service">
 <label><input type="checkbox" data-nombre="Carga de gas"> Carga de gas</label>
-<input type="number" placeholder="Precio Gs." class="precio">
+<input type="number" class="precio" placeholder="Precio Gs.">
 </div>
 
 <div class="service">
 <label><input type="checkbox" data-nombre="Instalación equipo nuevo"> Instalación equipo nuevo</label>
-<input type="number" placeholder="Precio Gs." class="precio">
+<input type="number" class="precio" placeholder="Precio Gs.">
 </div>
 
 <div class="service">
 <label><input type="checkbox" data-nombre="Desinstalación de equipo"> Desinstalación de equipo</label>
-<input type="number" placeholder="Precio Gs." class="precio">
+<input type="number" class="precio" placeholder="Precio Gs.">
 </div>
 
 <h3>Otros servicios</h3>
 <input id="otroNombre" placeholder="Descripción del servicio">
 <input id="otroPrecio" type="number" placeholder="Precio Gs.">
 <button class="add" onclick="agregarOtro()">➕ Agregar servicio</button>
-
 <ul id="listaOtros"></ul>
 
 <h3>Descuento</h3>
 <input id="descuento" type="number" placeholder="Descuento en Gs.">
-
 <label><input type="checkbox" id="iva"> Aplicar IVA 10%</label>
 
 <div class="total" id="total">Total: Gs. 0</div>
 
 <h3>Firma del técnico</h3>
-<canvas id="firma" width="480" height="150"></canvas>
-<button onclick="limpiarFirma()">Limpiar firma</button>
+<canvas id="firmaTec" width="500" height="120"></canvas>
+<button onclick="limpiarFirma('firmaTec')">Limpiar firma técnico</button>
+
+<h3>Firma del cliente</h3>
+<canvas id="firmaCli" width="500" height="120"></canvas>
+<button onclick="limpiarFirma('firmaCli')">Limpiar firma cliente</button>
 
 <button onclick="calcular()">Calcular total</button>
 <button class="pdf" onclick="descargarPDF()">Descargar PDF</button>
@@ -81,76 +152,96 @@ footer{text-align:center;margin-top:20px;font-size:14px}
 </div>
 
 <footer>
-<strong>RHAB Tech</strong><br>
-guaiapp@rhabinternationaltrading.com
+GUA’Ĩ APP · RHAB Tech · Uso empresarial
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-let nro=localStorage.getItem("presupuesto")||0;
-nro++;localStorage.setItem("presupuesto",nro);
+/* NUMERACIÓN */
+let nro = localStorage.getItem("empresa_presupuesto") || 0;
+nro++;
+localStorage.setItem("empresa_presupuesto", nro);
 
-const canvas=document.getElementById("firma"),ctx=canvas.getContext("2d");
-let dib=false;
-canvas.addEventListener("touchstart",()=>dib=true);
-canvas.addEventListener("touchend",()=>dib=false);
-canvas.addEventListener("touchmove",e=>{
-if(!dib)return;
-const t=e.touches[0],r=canvas.getBoundingClientRect();
-ctx.lineTo(t.clientX-r.left,t.clientY-r.top);ctx.stroke();
-});
-function limpiarFirma(){ctx.clearRect(0,0,canvas.width,canvas.height)}
+/* FIRMA PRO */
+function activarFirma(id){
+  const canvas=document.getElementById(id);
+  const ctx=canvas.getContext("2d");
+  ctx.lineWidth=2; ctx.lineCap="round";
+  let draw=false;
 
-let otros=[];
+  canvas.addEventListener("touchstart",e=>{
+    e.preventDefault(); draw=true;
+    const t=e.touches[0],r=canvas.getBoundingClientRect();
+    ctx.beginPath();
+    ctx.moveTo(t.clientX-r.left,t.clientY-r.top);
+  },{passive:false});
+
+  canvas.addEventListener("touchmove",e=>{
+    if(!draw) return;
+    e.preventDefault();
+    const t=e.touches[0],r=canvas.getBoundingClientRect();
+    ctx.lineTo(t.clientX-r.left,t.clientY-r.top);
+    ctx.stroke();
+  },{passive:false});
+
+  canvas.addEventListener("touchend",e=>{
+    e.preventDefault(); draw=false;
+  },{passive:false});
+}
+activarFirma("firmaTec");
+activarFirma("firmaCli");
+
+function limpiarFirma(id){
+  const c=document.getElementById(id);
+  c.getContext("2d").clearRect(0,0,c.width,c.height);
+}
+
+/* SERVICIOS */
+let otros=[], total=0, detalle=[];
 
 function agregarOtro(){
-const n=otroNombre.value,p=otroPrecio.value;
-if(!n||!p)return alert("Completa servicio y precio");
-otros.push({n,p});
-listaOtros.innerHTML+=`<li>${n} – Gs. ${p}</li>`;
-otroNombre.value="";otroPrecio.value="";
+  if(!otroNombre.value||!otroPrecio.value) return alert("Completa servicio y precio");
+  otros.push({n:otroNombre.value,p:otroPrecio.value});
+  listaOtros.innerHTML+=`<li>${otroNombre.value} – Gs. ${otroPrecio.value}</li>`;
+  otroNombre.value=""; otroPrecio.value="";
 }
-
-let total=0,detalle=[];
 
 function calcular(){
-total=0;detalle=[];
-document.querySelectorAll(".service").forEach(s=>{
-const c=s.querySelector("input[type=checkbox]");
-const p=s.querySelector(".precio").value;
-if(c.checked && p){
-total+=+p;
-detalle.push(`${c.dataset.nombre} – Gs. ${p}`);
-}
-});
-otros.forEach(o=>{total+=+o.p;detalle.push(`${o.n} – Gs. ${o.p}`)});
-const desc=+descuento.value||0;
-total-=desc;
-if(iva.checked) total*=1.10;
-document.getElementById("total").innerText="Total: Gs. "+Math.round(total);
+  total=0; detalle=[];
+  document.querySelectorAll(".service").forEach(s=>{
+    const c=s.querySelector("input[type=checkbox]");
+    const p=s.querySelector(".precio").value;
+    if(c.checked && p){ total+=+p; detalle.push(`${c.dataset.nombre} – Gs. ${p}`); }
+  });
+  otros.forEach(o=>{ total+=+o.p; detalle.push(`${o.n} – Gs. ${o.p}`); });
+  total -= (+descuento.value||0);
+  if(iva.checked) total*=1.10;
+  total=Math.round(total);
+  document.getElementById("total").innerText="Total: Gs. "+total;
 }
 
+/* PDF */
 function descargarPDF(){
-if(!detalle.length)return alert("Agregá servicios");
-const {jsPDF}=window.jspdf;
-const doc=new jsPDF();
-doc.text("PRESUPUESTO DE SERVICIO",20,20);
-doc.text(`N° ${nro}`,160,20);
-doc.text(`Cliente: ${cliente.value}`,20,30);
-doc.text(`Fecha: ${new Date().toLocaleDateString()}`,20,36);
-let y=50;
-detalle.forEach(d=>{doc.text("- "+d,25,y);y+=7});
-if(descuento.value) doc.text(`Descuento: Gs. ${descuento.value}`,20,y+=5);
-doc.text(`TOTAL: Gs. ${Math.round(total)}`,20,y+=8);
-doc.addImage(canvas.toDataURL(),"PNG",20,y+10,80,30);
-doc.text("Firma técnico",20,y+45);
-doc.save(`Presupuesto-${nro}.pdf`);
+  if(!detalle.length) return alert("Agregá servicios");
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF();
+  doc.text("PRESUPUESTO DE SERVICIO",20,20);
+  doc.text(`N° ${nro}`,160,20);
+  doc.text(`Cliente: ${cliente.value}`,20,35);
+  doc.text(`Técnico: ${tecnico.value}`,20,42);
+  let y=60;
+  detalle.forEach(d=>{doc.text("- "+d,25,y);y+=7});
+  doc.text(`TOTAL: Gs. ${total}`,20,y+6);
+  doc.addImage(firmaTec.toDataURL(),"PNG",20,y+15,70,25);
+  doc.addImage(firmaCli.toDataURL(),"PNG",110,y+15,70,25);
+  doc.save(`Presupuesto-${nro}.pdf`);
 }
 
+/* WHATSAPP */
 function enviarWhatsApp(){
-let msg=`Presupuesto N° ${nro}%0ACliente: ${cliente.value}%0ATotal: Gs. ${Math.round(total)}`;
-window.open(`https://wa.me/?text=${msg}`);
+  const msg=`RHAB INTERNATIONAL TRADING%0APresupuesto N° ${nro}%0ACliente: ${cliente.value}%0ATotal: Gs. ${total}`;
+  window.open(`https://wa.me/?text=${msg}`);
 }
 </script>
 
