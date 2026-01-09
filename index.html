@@ -102,7 +102,7 @@ Email: guaiapp@rhabinternationaltrading.com
 
 <div class="service">
 <label><input type="checkbox" data-nombre="Mantenimiento preventivo"> Mantenimiento preventivo</label>
-<input type="number" class="precio" placeholder="Precio Gs.">
+<input type="number" class="precio" placeholder="Precio Gs."> 
 </div>
 
 <div class="service">
@@ -148,6 +148,11 @@ Email: guaiapp@rhabinternationaltrading.com
 <button onclick="calcular()">Calcular total</button>
 <button class="pdf" onclick="descargarPDF()">Descargar PDF</button>
 <button class="wa" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
+  <hr>
+<h3>Historial de presupuestos</h3>
+<button onclick="verHistorial()">Ver historial</button>
+<button onclick="exportarCSV()">Exportar CSV</button>
+<ul id="historial"></ul>
 
 </div>
 
