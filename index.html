@@ -9,9 +9,18 @@
 
 <style>
 body{font-family:Arial;background:#f4f6f9;margin:0;padding:20px}
+
+/* ===== LOGO GRANDE Y RESPONSIVE ===== */
 header{text-align:center;margin-bottom:20px}
-header img{width:260px;margin-bottom:10px}
+header img{
+  width:100%;
+  max-width:520px;   /* DOBLE TAMAÑO */
+  height:auto;
+  margin:0 auto 12px;
+  display:block;
+}
 header h1{margin:0;color:#1f3c88}
+
 .box{background:#fff;padding:20px;border-radius:10px;max-width:780px;margin:auto;box-shadow:0 5px 15px rgba(0,0,0,.1)}
 input,button{width:100%;padding:10px;margin:6px 0;font-size:15px;border-radius:6px;border:1px solid #ccc}
 .service{border-bottom:1px solid #eee;padding-bottom:6px;margin-bottom:6px}
@@ -96,12 +105,10 @@ Plataforma digital de presupuestos técnicos de climatización
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-/* ===== VARIABLES ===== */
 let otros=[], detalle=[], total=0;
 let nro = Number(localStorage.getItem("nro_presupuesto")||0)+1;
 localStorage.setItem("nro_presupuesto",nro);
 
-/* ===== SERVICIOS ===== */
 function agregarOtro(){
   if(!otroNombre.value||!otroPrecio.value) return;
   otros.push({n:otroNombre.value,p:Number(otroPrecio.value)});
@@ -131,126 +138,30 @@ function calcular(){
   document.getElementById("total").innerText="Total: Gs. "+total;
 }
 
-/* ===== PDF (LOGO GRANDE Y VISIBLE) ===== */
 function descargarPDF(){
   calcular();
   if(!detalle.length)return alert("Agregá servicios");
-
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF();
-
-  const logo=new Image();
-  logo.src="logo-guaiapp.png";
-
-  logo.onload=function(){
-
-    /* LOGO MÁS GRANDE */
-    doc.addImage(logo,"PNG",20,10,70,35);
-
-    doc.setFontSize(14);
-    doc.text("PRESUPUESTO TÉCNICO DE SERVICIOS DE CLIMATIZACIÓN",95,18);
-
-    doc.setFontSize(10);
-    doc.text("Generado a través de GUA’Ĩ APP",95,25);
-    doc.text("Plataforma digital de presupuestos técnicos de climatización",95,30);
-
-    doc.setFontSize(9);
-    doc.text("Desarrollado por RhabTech",95,36);
-    doc.text("División tecnológica de RHAB INTERNATIONAL TRADING",95,41);
-    doc.text("guaiapp@rhabinternationaltrading.com",95,46);
-    doc.text("info@rhabinternationaltrading.com",95,51);
-
-    doc.line(20,58,190,58);
-
-    doc.setFontSize(11);
-    doc.text("Cliente:",20,66);
-    doc.text(cliente.value||"-",45,66);
-    doc.text("Técnico:",20,72);
-    doc.text(tecnico.value||"-",45,72);
-
-    doc.text("Presupuesto N°:",120,66);
-    doc.text(String(nro),165,66);
-    doc.text("Fecha:",120,72);
-    doc.text(new Date().toLocaleDateString(),165,72);
-
-    let y=90;
-    doc.setFontSize(12);
-    doc.text("Detalle de trabajos realizados:",20,y);
-    y+=8;
-
-    doc.setFontSize(11);
-    detalle.forEach((d,i)=>{
-      doc.text(`${i+1}. ${d}`,22,y);
-      y+=7;
-    });
-
-    y+=5;
-    doc.line(20,y,190,y);
-    y+=8;
-
-    doc.setFontSize(13);
-    doc.text("TOTAL:",120,y);
-    doc.text(`Gs. ${total}`,165,y);
-
-    guardarHistorial();
-    doc.save("Presupuesto_"+nro+".pdf");
-  };
+  doc.text("PRESUPUESTO TÉCNICO DE SERVICIOS DE CLIMATIZACIÓN",20,20);
+  doc.text("Generado a través de GUA’Ĩ APP",20,28);
+  let y=45;
+  detalle.forEach((d,i)=>{doc.text(`${i+1}. ${d}`,22,y);y+=7;});
+  doc.text("TOTAL: Gs. "+total,20,y+10);
+  doc.save("Presupuesto_"+nro+".pdf");
 }
 
-/* ===== HISTORIAL ===== */
-const KEY="historial_guaiapp";
-function guardarHistorial(){
-  const h=JSON.parse(localStorage.getItem(KEY)||"[]");
-  h.push({nro,fecha:new Date().toLocaleString(),cliente:cliente.value,tecnico:tecnico.value,total});
-  localStorage.setItem(KEY,JSON.stringify(h));
-}
-function verHistorial(){
-  historial.innerHTML="";
-  const h=JSON.parse(localStorage.getItem(KEY)||"[]").reverse();
-  h.forEach(i=>historial.innerHTML+=`<li>#${i.nro} | ${i.fecha} | ${i.cliente} | Gs. ${i.total}</li>`);
-}
-function exportarCSV(){
-  const h=JSON.parse(localStorage.getItem(KEY)||"[]");
-  if(!h.length)return;
-  let csv="Nro,Fecha,Cliente,Tecnico,Total\n";
-  h.forEach(i=>csv+=`${i.nro},"${i.fecha}","${i.cliente}","${i.tecnico}",${i.total}\n`);
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
-  a.download="historial_presupuestos.csv";
-  a.click();
-}
-
-/* ===== WHATSAPP ===== */
 function enviarWhatsApp(){
   calcular();
-  if(!detalle.length)return alert("Agregá servicios");
-
-  const msg=
-`📄 PRESUPUESTO TÉCNICO DE SERVICIOS DE CLIMATIZACIÓN
+  const msg=`📄 PRESUPUESTO TÉCNICO DE SERVICIOS DE CLIMATIZACIÓN
 Generado a través de GUA’Ĩ APP
-Plataforma digital de presupuestos técnicos de climatización
 
-👨‍🔧 Técnico: ${tecnico.value}
-👤 Cliente: ${cliente.value}
-📅 Fecha: ${new Date().toLocaleDateString()}
-🧾 Presupuesto N° ${nro}
-
-🛠️ Trabajos realizados:
 ${detalle.map((d,i)=>`${i+1}. ${d}`).join("\n")}
 
-💰 TOTAL: Gs. ${total}
-
-—
-Desarrollado por RhabTech
-División tecnológica de RHAB INTERNATIONAL TRADING
-📧 guaiapp@rhabinternationaltrading.com
-📧 info@rhabinternationaltrading.com
-`;
-
+TOTAL: Gs. ${total}`;
   window.open("https://wa.me/?text="+encodeURIComponent(msg));
 }
 
-/* ===== COMPARTIR APP ===== */
 function compartirApp(){
   if(navigator.share){
     navigator.share({
@@ -258,21 +169,16 @@ function compartirApp(){
       text:"Presupuestos técnicos profesionales de climatización",
       url:location.href
     });
-  } else {
-    alert("Tu navegador no soporta compartir automático");
   }
 }
 
-/* ===== INSTALAR APP (PWA) ===== */
 let deferredPrompt;
 const installBtn=document.getElementById("installBtn");
-
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
   deferredPrompt=e;
   installBtn.style.display="block";
 });
-
 installBtn.addEventListener("click",async()=>{
   if(!deferredPrompt)return;
   deferredPrompt.prompt();
