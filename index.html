@@ -227,7 +227,35 @@ window.addEventListener("beforeinstallprompt",e=>{
   btnInstalar.style.display="block";
 });
 btnInstalar.onclick=()=>{deferredPrompt.prompt();};
+  /*************** PDF PROFESIONAL ****************/
+function downloadPDF(){
 
+  const pdf = document.getElementById("pdf");
+
+  if(!pdf){
+    alert("No se encontró el contenedor PDF");
+    return;
+  }
+
+  const nro = document.getElementById("nPresupuesto")?.innerText || Date.now();
+
+  html2pdf().set({
+    margin: [15, 15, 20, 15], // top, left, bottom, right
+    filename: "Presupuesto_GUAI_APP_" + nro + ".pdf",
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#ffffff"
+    },
+    jsPDF: {
+      unit: "mm",
+      format: "a4",
+      orientation: "portrait"
+    }
+  }).from(pdf).save();
+}
 // SW
 if("serviceWorker"in navigator){navigator.serviceWorker.register("sw.js");}
 </script>
