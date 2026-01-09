@@ -155,13 +155,64 @@ function exportPDF(){
   pdf.classList.remove("hidden");
   html2pdf().from(pdf).save("Presupuesto_"+n+".pdf").then(()=>pdf.classList.add("hidden"));
 }
+function sendWhats() {
+  const cliente = document.getElementById("cliente").value || "—";
+  const ruc = document.getElementById("ruc")?.value || "—";
+  const telCliente = document.getElementById("tel_cliente")?.value || "—";
+  const tecnico = document.getElementById("tecnico").value || "—";
+  const empresa = document.getElementById("empresa").value || "—";
 
-function enviarWhats(){
-  calcular();
-  let msg=`Presupuesto GUA’Ĩ APP\nCliente: ${cliente.value}\nTotal: Gs. ${total.innerText}`;
-  window.open("https://wa.me/?text="+encodeURIComponent(msg));
+  const subtotal = calc();
+  if (subtotal <= 0) {
+    alert("Debe cargar al menos un servicio.");
+    return;
+  }
+
+  const iva = Math.round(subtotal / 11);
+  const total = subtotal;
+
+  const fecha = new Date();
+  const fechaStr = fecha.toLocaleDateString("es-PY");
+  const venc = new Date(fecha);
+  venc.setDate(venc.getDate() + 7);
+  const vencStr = venc.toLocaleDateString("es-PY");
+
+  const nro = "GUA-" +
+    fecha.getFullYear() +
+    String(fecha.getMonth()+1).padStart(2,"0") +
+    String(fecha.getDate()).padStart(2,"0") +
+    "-" +
+    Math.floor(Math.random()*9000+1000);
+
+  let msg = "";
+  msg += "📄 *PRESUPUESTO TÉCNICO – GUA’Ĩ APP*%0A%0A";
+  msg += `Cliente: ${cliente}%0A`;
+  msg += `RUC: ${ruc}%0A`;
+  msg += `Teléfono: ${telCliente}%0A%0A`;
+  msg += `Técnico: ${tecnico}%0A`;
+  msg += `Empresa: ${empresa}%0A%0A`;
+  msg += `Fecha: ${fechaStr}%0A`;
+  msg += `Válido hasta: ${vencStr}%0A`;
+  msg += `N° Presupuesto: ${nro}%0A%0A`;
+  msg += "🛠️ *DETALLE DE SERVICIOS*%0A";
+
+  if (s1.value > 0) msg += `• Mantenimiento preventivo: Gs. ${s1.value}%0A`;
+  if (s2.value > 0) msg += `• Mantenimiento correctivo: Gs. ${s2.value}%0A`;
+  if (s3.value > 0) msg += `• Carga de gas: Gs. ${s3.value}%0A`;
+  if (s4.value > 0) msg += `• ${desc_otro.value || "Otro servicio"}: Gs. ${s4.value}%0A`;
+
+  msg += "%0A—————————————%0A";
+  msg += `Subtotal: Gs. ${(total-iva).toLocaleString("es-PY")}%0A`;
+  msg += `IVA 10% incluido: Gs. ${iva.toLocaleString("es-PY")}%0A`;
+  msg += `💰 *TOTAL A PAGAR: Gs. ${total.toLocaleString("es-PY")}*%0A`;
+  msg += "—————————————%0A%0A";
+  msg += "🛡️ Garantía: 7 días sobre el servicio realizado.%0A%0A";
+  msg += "📍 *RHAB Tech – División tecnológica de RHAB INTERNATIONAL TRADING*%0A";
+  msg += "San Lorenzo – Paraguay%0A";
+  msg += "📧 guaiapp@rhabinternationaltrading.com%0A%0A";
+  msg += "_Generado automáticamente por GUA’Ĩ APP_";
+  window.open("https://wa.me/?text=" + msg, "_blank");
 }
-
 function compartir(){
   if(navigator.share){
     navigator.share({title:"GUA’Ĩ APP",url:location.href});
