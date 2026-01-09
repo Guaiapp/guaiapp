@@ -21,6 +21,7 @@ body{
   margin:0;
   font-family:system-ui,Arial;
   background:var(--bg);
+  padding-bottom: 40px;
 }
 
 .header{
@@ -53,6 +54,7 @@ input{
   margin-top:6px;
   border-radius:8px;
   border:1px solid #ccc;
+  box-sizing: border-box; /* Ajuste para evitar desbordes */
 }
 
 .service{
@@ -76,6 +78,7 @@ input{
   font-size:15px;
   font-weight:600;
   margin-top:10px;
+  cursor: pointer;
 }
 
 .btn-blue{background:var(--primary);color:#fff;}
@@ -94,7 +97,7 @@ input{
 <body>
 
 <div class="header">
-  <img src="logotipo-guaiapp.png">
+  <img src="logotipo-guaiapp.png" alt="Gua'i App Logo">
   <h3>PRESUPUESTO TÉCNICO DE SERVICIOS DE CLIMATIZACIÓN</h3>
 </div>
 
@@ -147,70 +150,124 @@ guaiapp@rhabinternationaltrading.com · info@rhabinternationaltrading.com
 <script>
 let deferredPrompt;
 
+// Escucha el evento para habilitar la instalación
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById("btnInstalar");
+  btn.style.display = "block";
+  btn.style.background = "#0b5ed7"; // Ponerlo azul para destacar cuando esté listo
+  btn.style.color = "#fff";
+});
+
+// Lógica de cálculo
 function calc(){
   let sum = 0;
   ["s1","s2","s3","s4"].forEach(id=>{
-    sum += Number(document.getElementById(id).value||0);
+    // Busca el input hermano del checkbox
+    const inputNum = document.getElementById(id);
+    const checkbox = inputNum.parentElement.querySelector('input[type="checkbox"]');
+    
+    // Solo suma si el checkbox está marcado o si el usuario escribió algo
+    // (Ajuste para que sea más intuitivo: si escriben monto, lo cuenta)
+    if(inputNum.value > 0) {
+        checkbox.checked = true;
+        sum += Number(inputNum.value);
+    } else {
+        checkbox.checked = false;
+    }
   });
   document.getElementById("total").innerText = sum.toLocaleString("es-PY");
   document.getElementById("iva").innerText = Math.round(sum/11).toLocaleString("es-PY");
 }
 
 function downloadPDF(){
-  html2pdf().from(document.getElementById("pdf")).save("Presupuesto_GuaiApp.pdf");
+  const element = document.getElementById("pdf");
+  const opt = {
+    margin: 0.5,
+    filename: 'Presupuesto_GuaiApp.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
+  html2pdf().set(opt).from(element).save();
 }
 
 function sendWhats(){
-  const msg = `Presupuesto técnico generado vía GUA’Ĩ APP\nCliente: ${cliente.value}\nTotal: Gs. ${total.innerText}`;
-  window.open("https://wa.me/?text="+encodeURIComponent(msg));
+  const cliente = document.getElementById("cliente").value;
+  const total = document.getElementById("total").innerText;
+  if(total === "0") { alert("Calcula el total antes de enviar."); return; }
+  
+  const msg = `Presupuesto técnico generado vía GUA’Ĩ APP%0ACliente: ${cliente}%0ATotal: Gs. ${total}`;
+  window.open("https://wa.me/?text="+msg);
 }
 
 function shareApp(){
-  navigator.share({title:"GUA’Ĩ APP",url:location.href});
+  if (navigator.share) {
+    navigator.share({title:"GUA’Ĩ APP", url:location.href});
+  } else {
+    alert("Copia este enlace: " + location.href);
+  }
 }
 
-function saveHistory(){
-  const h = JSON.parse(localStorage.getItem("guai_historial")||"[]");
-  h.push({fecha:new Date().toLocaleString(),total:total.innerText});
-  localStorage.setItem("guai_historial",JSON.stringify(h));
+// Historial (Local Storage)
+function saveToHistory(monto){
+    const h = JSON.parse(localStorage.getItem("guai_historial")||"[]");
+    h.push({fecha:new Date().toLocaleString(), total: monto});
+    localStorage.setItem("guai_historial",JSON.stringify(h));
 }
+
+// Modificamos calc para que no guarde automáticamente, 
+// sino que podrías agregar un botón "Guardar" si quisieras.
+// Por ahora dejamos la lógica de visualización:
 
 function viewHistory(){
-  alert(localStorage.getItem("guai_historial")||"Sin historial");
+  const h = JSON.parse(localStorage.getItem("guai_historial")||"[]");
+  if(h.length === 0) { alert("Sin historial"); return; }
+  let msg = "Últimos presupuestos:\n";
+  h.slice(-5).forEach(i => msg += `${i.fecha}: ${i.total}\n`);
+  alert(msg);
 }
 
 function exportCSV(){
   const h = JSON.parse(localStorage.getItem("guai_historial")||"[]");
   let csv="Fecha,Total\n";
-  h.forEach(r=>csv+=`${r.fecha},${r.total}\n`);
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([csv]));
-  a.download="historial_guaiapp.csv";
+  h.forEach(r=>csv+=`${r.fecha},"${r.total}"\n`);
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "historial_guaiapp.csv";
   a.click();
 }
 
 function clearHistory(){
-  localStorage.removeItem("guai_historial");
-  alert("Historial borrado");
+  if(confirm("¿Borrar todo el historial?")){
+    localStorage.removeItem("guai_historial");
+    alert("Historial borrado");
+  }
 }
 
-window.addEventListener("beforeinstallprompt",e=>{
-  e.preventDefault();
-  deferredPrompt=e;
-  btnInstalar.style.display="block";
-});
-
-btnInstalar.onclick=async()=>{
-  if(!deferredPrompt){alert("La app ya está instalada");return;}
+// LOGICA DE INSTALACIÓN SOLICITADA
+const btnInstalar = document.getElementById("btnInstalar");
+btnInstalar.onclick = async () => {
+  if (!deferredPrompt) {
+    alert("La instalación no está disponible en este momento. \n\n1. Asegúrate de estar en Google Chrome (Android/PC).\n2. Si ya la instalaste antes, bórrala o busca la app en tu menú.\n3. Verifica que 'manifest.json' y 'sw.js' estén cargados.");
+    return;
+  }
   deferredPrompt.prompt();
-  deferredPrompt=null;
-  btnInstalar.style.display="none";
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  if (outcome === 'accepted') {
+    btnInstalar.style.display = "none";
+  }
 };
-</script>
 
-<script>
+// Registro del Service Worker
 if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js");
+  navigator.serviceWorker.register("./sw.js")
+    .then(reg => console.log("SW registrado", reg))
+    .catch(err => console.log("SW error", err));
 }
 </script>
 
