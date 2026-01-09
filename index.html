@@ -3,196 +3,145 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GUA'Ì APP – Presupuesto Técnico</title>
+<title>GUA’Ì APP</title>
 
-<!-- PWA -->
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0b5ed7">
+<meta name="theme-color" content="#0d6efd">
 
 <style>
-body{
-  font-family:system-ui,Arial;
-  background:#f4f6f9;
-  margin:0;
-  padding:0;
-}
-.header{
-  background:#0b5ed7;
-  text-align:center;
-  padding:20px;
-}
-.header img{
-  width:220px;
-  max-width:90%;
-}
-.container{
-  padding:16px;
-  max-width:700px;
-  margin:auto;
-}
-.card{
-  background:#fff;
-  border-radius:14px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-}
-button{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  border:none;
-  border-radius:12px;
-  font-size:15px;
-  font-weight:600;
-}
-.btn-main{background:#0b5ed7;color:#fff;}
-.btn-pdf{background:#28a745;color:#fff;}
-.btn-wa{background:#25D366;color:#fff;}
-.btn-gray{background:#6c757d;color:#fff;}
-footer{
-  text-align:center;
-  font-size:13px;
-  color:#555;
-  margin:20px 0;
-}
+body{font-family:Arial;background:#f4f6f8;margin:0;padding:20px}
+.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.1);margin-bottom:20px}
+button{width:100%;padding:14px;margin:8px 0;font-size:16px;border:none;border-radius:10px;color:#fff;cursor:pointer}
+.blue{background:#0d6efd}
+.green{background:#28a745}
+.green2{background:#2ecc71}
+.gray{background:#6c757d}
+input{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ccc}
+h2{margin-top:0}
+small{color:#555}
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <img src="logo-guaiapp.png" alt="Gua'ì APP">
-</div>
+<div class="card">
+<input id="cliente" placeholder="Nombre del cliente">
 
-<div class="container">
+<h2>Servicios</h2>
+
+<label><input type="checkbox" class="srv" data-name="Mantenimiento preventivo"> Mantenimiento preventivo</label>
+<input type="number" class="price" placeholder="Precio Gs.">
+
+<label><input type="checkbox" class="srv" data-name="Mantenimiento correctivo"> Mantenimiento correctivo</label>
+<input type="number" class="price" placeholder="Precio Gs.">
+
+<label><input type="checkbox" class="srv" data-name="Carga de gas"> Carga de gas</label>
+<input type="number" class="price" placeholder="Precio Gs.">
+
+<label><input type="checkbox" class="srv" data-name="Otro servicio"> Otro servicio</label>
+<input type="number" class="price" placeholder="Precio Gs.">
+
+<h3>Total: Gs. <span id="total">0</span></h3>
+
+<button class="blue" onclick="calcular()">Calcular total</button>
+<button class="green" onclick="descargarPDF()">Descargar PDF</button>
+<button class="green2" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
+
+<button id="btnInstall" class="gray">📲 Instalar App</button>
+<button class="gray" onclick="compartir()">🔗 Compartir App</button>
+</div>
 
 <div class="card">
-<h3>Presupuesto Técnico de Climatización</h3>
-<input id="tecnico" placeholder="Nombre del técnico" style="width:100%;padding:10px;margin-top:6px">
-<input id="cliente" placeholder="Nombre del cliente" style="width:100%;padding:10px;margin-top:6px">
+<h2>Historial Empresa</h2>
+<button class="gray" onclick="verHistorial()">Ver historial</button>
+<button class="gray" onclick="exportarCSV()">Exportar CSV</button>
+<button class="gray" onclick="borrarHistorial()">Borrar historial</button>
 </div>
 
-<div class="card">
-<h3>Servicios</h3>
-
-<label><input type="checkbox" class="srv" data-nombre="Mantenimiento preventivo"> Mantenimiento preventivo</label>
-<input type="number" class="precio" placeholder="Precio Gs.">
-
-<label><input type="checkbox" class="srv" data-nombre="Mantenimiento correctivo"> Mantenimiento correctivo</label>
-<input type="number" class="precio" placeholder="Precio Gs.">
-
-<label><input type="checkbox" class="srv" data-nombre="Carga de gas"> Carga de gas</label>
-<input type="number" class="precio" placeholder="Precio Gs.">
-
-<label><input type="checkbox" class="srv" data-nombre="Otro servicio"> Otro servicio</label>
-<input type="number" class="precio" placeholder="Precio Gs.">
-
-<p><strong>Total:</strong> <span id="total">Gs. 0</span></p>
-
-<button class="btn-main" onclick="calcular()">Calcular total</button>
-<button class="btn-pdf" onclick="descargarPDF()">Descargar PDF</button>
-<button class="btn-wa" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
-
-<hr>
-
-<button id="btnInstall" class="btn-gray" style="display:none" onclick="instalarApp()">📲 Instalar App</button>
-<button class="btn-gray" onclick="compartirApp()">🔗 Compartir App</button>
-
-</div>
-
-<footer>
-Generado a través de <strong>GUA’Ì APP</strong><br>
+<small>
+Generado a través de <b>GUA’Ì APP</b><br>
 Plataforma digital de presupuestos técnicos de climatización<br>
-Desarrollado por RHAB Tech – RHAB INTERNATIONAL TRADING<br>
-guaiapp@rhabinternationaltrading.com · info@rhabinternationaltrading.com
-</footer>
-
-</div>
-
-<!-- PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+Desarrollado por RHAB Tech – RHAB INTERNATIONAL TRADING
+</small>
 
 <script>
-/* ===== CÁLCULO ===== */
-let detalle=[], total=0, nro=Number(localStorage.getItem("guai_nro")||0)+1;
-localStorage.setItem("guai_nro",nro);
+let deferredPrompt=null;
 
-function calcular(){
-  detalle=[]; total=0;
-  document.querySelectorAll(".srv").forEach((c,i)=>{
-    const p=document.querySelectorAll(".precio")[i].value;
-    if(c.checked && p){
-      total+=Number(p);
-      detalle.push(`${c.dataset.nombre} – Gs. ${p}`);
-    }
-  });
-  document.getElementById("total").innerText="Gs. "+total;
-}
-
-/* ===== PDF ===== */
-function descargarPDF(){
-  calcular();
-  if(!detalle.length) return alert("Agregá servicios");
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF();
-  doc.addImage("logo-guaiapp.png","PNG",60,10,90,40);
-  doc.text("PRESUPUESTO TÉCNICO DE SERVICIOS DE CLIMATIZACIÓN",20,60);
-  doc.text("Generado a través de GUA’Ì APP",20,68);
-  doc.text(`Presupuesto N° ${nro}`,20,80);
-  doc.text(`Cliente: ${cliente.value}`,20,88);
-  doc.text(`Técnico: ${tecnico.value}`,20,96);
-  let y=110;
-  detalle.forEach((d,i)=>{doc.text((i+1)+". "+d,20,y);y+=7});
-  doc.text(`TOTAL: Gs. ${total}`,20,y+10);
-  doc.save("Presupuesto_"+nro+".pdf");
-}
-
-/* ===== WHATSAPP ===== */
-function enviarWhatsApp(){
-  calcular();
-  let msg=`Presupuesto Técnico – GUA’Ì APP\nCliente: ${cliente.value}\nTécnico: ${tecnico.value}\n\n`;
-  detalle.forEach((d,i)=>msg+=(i+1)+". "+d+"\n");
-  msg+=`\nTOTAL: Gs. ${total}`;
-  window.open("https://wa.me/?text="+encodeURIComponent(msg));
-}
-
-/* ===== COMPARTIR ===== */
-function compartirApp(){
-  if(navigator.share){
-    navigator.share({
-      title:"GUA’Ì APP",
-      text:"Presupuestos técnicos profesionales",
-      url:location.href
-    });
-  }else{
-    alert("Copiá este link:\n"+location.href);
-  }
-}
-
-/* ===== SERVICE WORKER ===== */
-if("serviceWorker" in navigator){
-  window.addEventListener("load",()=>{
-    navigator.serviceWorker.register("sw.js");
-  });
-}
-
-/* ===== INSTALAR APP (ANDROID) ===== */
-let deferredPrompt;
-window.addEventListener("beforeinstallprompt",(e)=>{
-  e.preventDefault();
-  deferredPrompt=e;
-  document.getElementById("btnInstall").style.display="block";
+window.addEventListener('beforeinstallprompt',e=>{
+e.preventDefault();
+deferredPrompt=e;
 });
 
-function instalarApp(){
-  if(!deferredPrompt){
-    alert("En iPhone: usar 'Agregar a pantalla de inicio'");
-    return;
-  }
-  deferredPrompt.prompt();
-  deferredPrompt.userChoice.then(()=>deferredPrompt=null);
+document.getElementById("btnInstall").addEventListener("click",async()=>{
+if(!deferredPrompt){
+alert("La instalación no está disponible en este momento.");
+return;
+}
+deferredPrompt.prompt();
+await deferredPrompt.userChoice;
+deferredPrompt=null;
+});
+
+function calcular(){
+let total=0;
+document.querySelectorAll(".price").forEach(i=>{
+if(i.previousElementSibling.querySelector("input").checked){
+total+=Number(i.value||0);
+}
+});
+document.getElementById("total").innerText=total.toLocaleString();
+guardarHistorial(total);
+}
+
+function guardarHistorial(total){
+let data=JSON.parse(localStorage.getItem("historial")||"[]");
+data.push({fecha:new Date().toLocaleString(),cliente:cliente.value,total});
+localStorage.setItem("historial",JSON.stringify(data));
+}
+
+function verHistorial(){
+let h=JSON.parse(localStorage.getItem("historial")||"[]");
+if(!h.length){alert("Historial vacío");return;}
+alert(h.map(x=>`${x.fecha} - ${x.cliente} - Gs. ${x.total}`).join("\n"));
+}
+
+function borrarHistorial(){
+if(confirm("¿Borrar historial?")){
+localStorage.removeItem("historial");
+alert("Historial borrado");
+}
+}
+
+function exportarCSV(){
+let h=JSON.parse(localStorage.getItem("historial")||"[]");
+if(!h.length){alert("Historial vacío");return;}
+let csv="Fecha,Cliente,Total\n"+h.map(x=>`${x.fecha},${x.cliente},${x.total}`).join("\n");
+let a=document.createElement("a");
+a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+a.download="historial.csv";
+a.click();
+}
+
+function descargarPDF(){
+window.print();
+}
+
+function enviarWhatsApp(){
+let t=document.getElementById("total").innerText;
+let msg=`Presupuesto GUA’Ì APP\nCliente: ${cliente.value}\nTotal: Gs. ${t}`;
+window.open("https://wa.me/?text="+encodeURIComponent(msg));
+}
+
+function compartir(){
+if(navigator.share){
+navigator.share({title:"GUA’Ì APP",url:location.href});
+}else{
+alert("Compartir no soportado");
+}
+}
+
+if('serviceWorker' in navigator){
+navigator.serviceWorker.register('sw.js');
 }
 </script>
 
