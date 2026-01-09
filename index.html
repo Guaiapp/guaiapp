@@ -22,16 +22,23 @@ button{width:100%;padding:14px;margin-top:10px;border:none;border-radius:8px;fon
 .footer{text-align:center;font-size:11px;color:#444;padding:20px}
 .hidden{display:none}
 
-/* PDF */
-#pdf{width:210mm;min-height:297mm;padding:20mm;background:#fff}
-#pdf table{width:100%;border-collapse:collapse;font-size:12px}
-#pdf th,#pdf td{border:1px solid #333;padding:6px}
+/* ===== PDF TAMAÑO OFICIO (LEGAL) ===== */
+#pdf{
+  width: 216mm;
+  min-height: 356mm;
+  padding: 20mm;
+  margin: 0 auto;
+  background: #ffffff;
+  box-sizing: border-box;
+  font-size: 12px;
+  color: #000;
+}
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div id="pdf">
 
 <div class="header">
   <img src="logotipo-guaiapp.png">
@@ -116,6 +123,7 @@ guaiapp@rhabinternationaltrading.com
 </div>
 
 <script>
+  
 function calcular(){
   let total=(+s1.value||0)+(+s2.value||0)+(+s3.value||0)+(+s4.value||0);
   let sub=total/1.1;
@@ -155,6 +163,7 @@ function exportPDF(){
   pdf.classList.remove("hidden");
   html2pdf().from(pdf).save("Presupuesto_"+n+".pdf").then(()=>pdf.classList.add("hidden"));
 }
+  
 function sendWhats() {
   const cliente = document.getElementById("cliente").value || "—";
   const ruc = document.getElementById("ruc")?.value || "—";
@@ -256,6 +265,7 @@ function downloadPDF(){
     }
   }).from(pdf).save();
 }
+  
 // SW
 if("serviceWorker"in navigator){navigator.serviceWorker.register("sw.js");}
 </script>
