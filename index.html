@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>GUA’Ĩ APP – Presupuestos</title>
+<title>GUA’Ĩ APP – Presupuestos Técnicos</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="manifest" href="manifest.json">
@@ -10,9 +10,9 @@
 <style>
 body{font-family:Arial;background:#f4f6f9;margin:0;padding:20px}
 header{text-align:center;margin-bottom:20px}
-header img{width:220px;margin-bottom:10px}
+header img{width:260px;margin-bottom:10px}
 header h1{margin:0;color:#1f3c88}
-.box{background:#fff;padding:20px;border-radius:10px;max-width:720px;margin:auto;box-shadow:0 5px 15px rgba(0,0,0,.1)}
+.box{background:#fff;padding:20px;border-radius:10px;max-width:760px;margin:auto;box-shadow:0 5px 15px rgba(0,0,0,.1)}
 input,button{width:100%;padding:10px;margin:6px 0;font-size:15px;border-radius:6px;border:1px solid #ccc}
 .service{border-bottom:1px solid #eee;padding-bottom:6px;margin-bottom:6px}
 button{background:#1f3c88;color:#fff;border:none;cursor:pointer}
@@ -20,6 +20,7 @@ button.pdf{background:#28a745}
 button.wa{background:#25D366}
 button.sec{background:#6c757d}
 button.install{background:#ff9800;color:#000;font-weight:bold}
+button.share{background:#0d6efd}
 .total{font-weight:bold;font-size:20px;margin-top:12px}
 ul{padding-left:18px}
 footer{text-align:center;margin-top:20px;font-size:14px;color:#555}
@@ -30,15 +31,10 @@ footer{text-align:center;margin-top:20px;font-size:14px;color:#555}
 
 <header>
   <img src="logo-guaiapp.png" alt="GUA’Ĩ APP">
-  <h1>GUA’Ĩ APP – Empresa</h1>
+  <h1>GUA’Ĩ APP</h1>
 </header>
 
 <div class="box">
-
-<strong>RHAB INTERNATIONAL TRADING</strong><br>
-WhatsApp: +595 992 755 100<br>
-Email: guaiapp@rhabinternationaltrading.com
-<hr>
 
 <input id="tecnico" placeholder="Nombre del técnico">
 <input id="cliente" placeholder="Nombre del cliente">
@@ -76,8 +72,13 @@ Email: guaiapp@rhabinternationaltrading.com
 <button class="pdf" onclick="descargarPDF()">Descargar PDF</button>
 <button class="wa" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
 
+<!-- BOTONES CLAVE -->
 <button id="installBtn" class="install" style="display:none">
-📲 Descargar / Instalar GUA’Ĩ APP
+📲 Instalar / Descargar GUA’Ĩ APP
+</button>
+
+<button class="share" onclick="compartirApp()">
+📤 Compartir GUA’Ĩ APP
 </button>
 
 <hr>
@@ -88,104 +89,104 @@ Email: guaiapp@rhabinternationaltrading.com
 
 </div>
 
-<footer>GUA’Ĩ APP · RHAB Tech · PWA Empresarial</footer>
+<footer>
+Presupuestos generados mediante <strong>GUA’Ĩ APP</strong><br>
+Plataforma digital de presupuestos técnicos
+</footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 /* ===== VARIABLES ===== */
-let otros = [];
-let detalle = [];
-let total = 0;
-let nro = Number(localStorage.getItem("nro_presupuesto") || 0) + 1;
-localStorage.setItem("nro_presupuesto", nro);
+let otros=[], detalle=[], total=0;
+let nro = Number(localStorage.getItem("nro_presupuesto")||0)+1;
+localStorage.setItem("nro_presupuesto",nro);
 
 /* ===== SERVICIOS ===== */
 function agregarOtro(){
-  if(!otroNombre.value || !otroPrecio.value) return;
-  otros.push({n: otroNombre.value, p: Number(otroPrecio.value)});
-  otrosLista.innerHTML += `<li>${otroNombre.value} – Gs. ${otroPrecio.value}</li>`;
+  if(!otroNombre.value||!otroPrecio.value) return;
+  otros.push({n:otroNombre.value,p:Number(otroPrecio.value)});
+  otrosLista.innerHTML+=`<li>${otroNombre.value} – Gs. ${otroPrecio.value}</li>`;
   otroNombre.value=""; otroPrecio.value="";
 }
 
 function calcular(){
-  total = 0;
-  detalle = [];
-
+  total=0; detalle=[];
   document.querySelectorAll(".service").forEach(s=>{
-    const chk = s.querySelector("input[type=checkbox]");
-    const precio = Number(s.querySelector(".precio").value || 0);
-    if(chk.checked && precio > 0){
-      total += precio;
-      detalle.push(`${chk.dataset.nombre} – Gs. ${precio}`);
+    const chk=s.querySelector("input[type=checkbox]");
+    const p=Number(s.querySelector(".precio").value||0);
+    if(chk.checked&&p>0){
+      total+=p;
+      detalle.push(`${chk.dataset.nombre} – Gs. ${p}`);
     }
   });
-
-  otros.forEach(o=>{
-    total += o.p;
-    detalle.push(`${o.n} – Gs. ${o.p}`);
-  });
-
-  const desc = Number(descuento.value || 0);
-  if(desc > 0){
-    total -= desc;
-    detalle.push(`Descuento – Gs. ${desc}`);
-  }
-
+  otros.forEach(o=>{total+=o.p;detalle.push(`${o.n} – Gs. ${o.p}`);});
+  const d=Number(descuento.value||0);
+  if(d>0){total-=d;detalle.push(`Descuento – Gs. ${d}`);}
   if(iva.checked){
-    const ivaMonto = Math.round(total * 0.10);
-    total += ivaMonto;
+    const ivaMonto=Math.round(total*0.10);
+    total+=ivaMonto;
     detalle.push(`IVA 10% – Gs. ${ivaMonto}`);
   }
-
-  total = Math.round(total);
-  document.getElementById("total").innerText = "Total: Gs. " + total;
+  total=Math.round(total);
+  document.getElementById("total").innerText="Total: Gs. "+total;
 }
 
 /* ===== PDF ===== */
 function descargarPDF(){
   calcular();
-  if(!detalle.length) return alert("Agregá servicios");
-
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-
-  doc.text("PRESUPUESTO DE SERVICIO",20,20);
-  doc.text("N° " + nro,160,20);
-  doc.text("Cliente: " + cliente.value,20,35);
-  doc.text("Técnico: " + tecnico.value,20,42);
-
-  let y = 60;
-  doc.text("Detalle de trabajos:",20,y); y+=8;
-  detalle.forEach((d,i)=>{ doc.text(`${i+1}. ${d}`,22,y); y+=7; });
-
-  doc.text("TOTAL: Gs. " + total,20,y+6);
-
-  guardarHistorial();
-  doc.save("Presupuesto_"+nro+".pdf");
+  if(!detalle.length)return alert("Agregá servicios");
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF();
+  const logo=new Image();
+  logo.src="logo-guaiapp.png";
+  logo.onload=function(){
+    doc.addImage(logo,"PNG",20,10,55,28);
+    doc.setFontSize(16);
+    doc.text("PRESUPUESTO DE SERVICIO",80,20);
+    doc.setFontSize(10);
+    doc.text("Realizado a través de GUA’Ĩ APP",80,26);
+    doc.line(20,42,190,42);
+    doc.setFontSize(11);
+    doc.text("Cliente:",20,56);
+    doc.text(cliente.value,45,56);
+    doc.text("Técnico:",20,62);
+    doc.text(tecnico.value,45,62);
+    doc.text("Presupuesto N°:",120,50);
+    doc.text(String(nro),160,50);
+    doc.text("Fecha:",120,56);
+    doc.text(new Date().toLocaleDateString(),160,56);
+    let y=78;
+    doc.text("Detalle de trabajos:",20,y);y+=8;
+    detalle.forEach((d,i)=>{doc.text(`${i+1}. ${d}`,22,y);y+=7;});
+    y+=5;doc.line(20,y,190,y);y+=8;
+    doc.setFontSize(13);
+    doc.text("TOTAL:",120,y);
+    doc.text(`Gs. ${total}`,160,y);
+    guardarHistorial();
+    doc.save("Presupuesto_"+nro+".pdf");
+  };
 }
 
 /* ===== HISTORIAL ===== */
-const KEY = "historial_guaiapp";
+const KEY="historial_guaiapp";
 function guardarHistorial(){
-  const h = JSON.parse(localStorage.getItem(KEY) || "[]");
-  h.push({nro, fecha:new Date().toLocaleString(), cliente:cliente.value, tecnico:tecnico.value, total});
-  localStorage.setItem(KEY, JSON.stringify(h));
+  const h=JSON.parse(localStorage.getItem(KEY)||"[]");
+  h.push({nro,fecha:new Date().toLocaleString(),cliente:cliente.value,tecnico:tecnico.value,total});
+  localStorage.setItem(KEY,JSON.stringify(h));
 }
 function verHistorial(){
   historial.innerHTML="";
-  const h = JSON.parse(localStorage.getItem(KEY) || "[]").reverse();
-  h.forEach(i=>{
-    historial.innerHTML += `<li>#${i.nro} | ${i.fecha} | ${i.cliente} | Gs. ${i.total}</li>`;
-  });
+  const h=JSON.parse(localStorage.getItem(KEY)||"[]").reverse();
+  h.forEach(i=>historial.innerHTML+=`<li>#${i.nro} | ${i.fecha} | ${i.cliente} | Gs. ${i.total}</li>`);
 }
 function exportarCSV(){
-  const h = JSON.parse(localStorage.getItem(KEY) || "[]");
-  if(!h.length) return;
-  let csv = "Nro,Fecha,Cliente,Tecnico,Total\n";
-  h.forEach(i=> csv += `${i.nro},"${i.fecha}","${i.cliente}","${i.tecnico}",${i.total}\n`);
+  const h=JSON.parse(localStorage.getItem(KEY)||"[]");
+  if(!h.length)return;
+  let csv="Nro,Fecha,Cliente,Tecnico,Total\n";
+  h.forEach(i=>csv+=`${i.nro},"${i.fecha}","${i.cliente}","${i.tecnico}",${i.total}\n`);
   const a=document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
   a.download="historial_presupuestos.csv";
   a.click();
 }
@@ -193,36 +194,55 @@ function exportarCSV(){
 /* ===== WHATSAPP ===== */
 function enviarWhatsApp(){
   calcular();
-  if(!detalle.length) return alert("Agregá servicios");
-  const msg = `RHAB INTERNATIONAL TRADING
-Presupuesto N° ${nro}
-Cliente: ${cliente.value}
+  if(!detalle.length)return alert("Agregá servicios");
+  const msg=`📄 PRESUPUESTO DE SERVICIO
+Realizado a través de GUA’Ĩ APP
 
-Trabajos realizados:
+👨‍🔧 Técnico: ${tecnico.value}
+👤 Cliente: ${cliente.value}
+📅 Fecha: ${new Date().toLocaleDateString()}
+🧾 Presupuesto N° ${nro}
+
+🛠️ Trabajos realizados:
 ${detalle.map((d,i)=>`${i+1}. ${d}`).join("\n")}
 
-TOTAL: Gs. ${total}`;
+💰 TOTAL: Gs. ${total}
+
+—
+Presupuesto generado con GUA’Ĩ APP`;
   window.open("https://wa.me/?text="+encodeURIComponent(msg));
+}
+
+/* ===== COMPARTIR APP ===== */
+function compartirApp(){
+  if(navigator.share){
+    navigator.share({
+      title:"GUA’Ĩ APP",
+      text:"Descargá GUA’Ĩ APP – presupuestos técnicos profesionales",
+      url:location.href
+    });
+  } else {
+    alert("Tu navegador no soporta compartir automático");
+  }
 }
 
 /* ===== INSTALAR APP (PWA) ===== */
 let deferredPrompt;
-const installBtn = document.getElementById("installBtn");
-
-window.addEventListener("beforeinstallprompt", e=>{
+const installBtn=document.getElementById("installBtn");
+window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
-  deferredPrompt = e;
-  installBtn.style.display = "block";
+  deferredPrompt=e;
+  installBtn.style.display="block";
 });
-
-installBtn.addEventListener("click", async ()=>{
-  if(!deferredPrompt) return;
+installBtn.addEventListener("click",async()=>{
+  if(!deferredPrompt)return;
   deferredPrompt.prompt();
   await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  installBtn.style.display = "none";
+  deferredPrompt=null;
+  installBtn.style.display="none";
 });
 </script>
 
 </body>
 </html>
+
