@@ -6,62 +6,86 @@
 <title>GUA’Ĩ APP | Presupuesto Técnico</title>
 
 <link rel="manifest" href="manifiesto.json">
+<meta name="theme-color" content="#0b5ed7">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
 :root{ --primary:#0b5ed7; --green:#28a745; --gray:#6c757d; --bg:#f4f6f8; }
-body{ margin:0; font-family:system-ui,Arial; background:var(--bg); padding-bottom:40px; }
+body{ margin:0; font-family:system-ui,Arial; background:var(--bg); }
 
-/* Contenedor principal que se imprimirá en el PDF */
-#app-container {
-  max-width: 800px;
-  margin: 0 auto;
-  background: #f4f6f8; /* Fondo para pantalla */
+#app-container{
+  max-width:800px;
+  margin:0 auto;
+  background:#fff;
 }
 
-.header{ background:var(--primary); color:#fff; text-align:center; padding:20px; }
-.header img{ width:260px; max-width:90%; }
-.container{ padding:16px; }
+.header{
+  background:var(--primary);
+  color:#fff;
+  text-align:center;
+  padding:20px;
+}
+.header img{ width:240px; }
+
+.container{ padding:20px; }
 
 .card{
-  background:#fff; border-radius:14px; padding:16px; margin-bottom:16px;
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  background:#fff;
+  border-radius:12px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 2px 6px rgba(0,0,0,.08);
 }
 
-h2{ color:var(--primary); font-size:16px; margin-top:0; }
-h3{ margin: 10px 0 0 0; font-weight: 500;}
+h2{ color:var(--primary); font-size:16px; margin:0 0 10px 0; }
 
 input{
-  width:100%; padding:10px; margin-top:6px; border-radius:8px;
-  border:1px solid #ccc; box-sizing: border-box;
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  border-radius:8px;
+  border:1px solid #ccc;
 }
 
 .service-row{
-  display:flex; align-items:center; gap:10px; margin-top:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-top:10px;
 }
-.service-desc{ flex-grow: 1; }
-.service-price{ width: 120px; }
+.service-desc{ flex:1; }
+.service-price{ width:120px; }
 
 .total-box{
-  margin-top: 20px; border-top: 2px solid #eee; padding-top: 10px;
+  margin-top:15px;
+  border-top:1px solid #eee;
+  padding-top:10px;
 }
-.total{ font-size:18px; font-weight:700; color: #000; }
+.total{ font-size:18px; font-weight:bold; }
 
 .btn{
-  width:100%; padding:14px; border:none; border-radius:12px;
-  font-size:15px; font-weight:600; margin-top:10px; cursor: pointer;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  margin-top:10px;
+  font-weight:600;
+  cursor:pointer;
 }
 .btn-blue{ background:var(--primary); color:#fff; }
 .btn-green{ background:var(--green); color:#fff; }
 .btn-gray{ background:var(--gray); color:#fff; }
 
 .footer{
-  text-align:center; font-size:10px; color:#555; margin:20px 0; padding: 10px;
+  text-align:center;
+  font-size:11px;
+  color:#444;
+  padding:20px;
+  border-top:1px solid #ddd;
 }
 
-/* Ajustes específicos para cuando se genera el PDF */
-.pdf-bg { background: #fff !important; } /* Fondo blanco en PDF */
+.pdf-bg{ background:#fff !important; }
 </style>
 </head>
 
@@ -69,205 +93,113 @@ input{
 
 <div id="app-container">
 
-  <div class="header">
-    <img src="logotipo-guaiapp.png" alt="Gua'i App Logo" crossorigin="anonymous">
-    <h3>PRESUPUESTO TÉCNICO DE CLIMATIZACIÓN</h3>
-  </div>
+<div class="header">
+  <img src="logotipo-guaiapp.png">
+  <div>PRESUPUESTO TÉCNICO DE CLIMATIZACIÓN</div>
+</div>
 
-  <div class="container">
+<div class="container">
 
-    <div class="card">
-      <h2>Datos del Cliente y Técnico</h2>
-      <input id="cliente" placeholder="Nombre del cliente">
-      <input id="tecnico" placeholder="Nombre del técnico">
-      <input id="empresa" placeholder="Empresa del técnico">
+<div class="card">
+  <b>N° Presupuesto:</b> <span id="numPresupuesto"></span><br>
+  <b>Fecha emisión:</b> <span id="fecha"></span><br>
+  <b>Válido hasta:</b> <span id="vencimiento"></span>
+</div>
+
+<div class="card">
+  <h2>Datos</h2>
+  <input id="cliente" placeholder="Cliente">
+  <input id="ruc" placeholder="RUC / CI Cliente">
+  <input id="tecnico" placeholder="Técnico responsable">
+  <input id="empresa" placeholder="Empresa / Taller">
+</div>
+
+<div class="card">
+  <h2>Servicios</h2>
+
+  <div class="service-row"><input type="checkbox">
+    <div class="service-desc">Mantenimiento preventivo</div>
+    <input id="s1" class="service-price" type="number"></div>
+
+  <div class="service-row"><input type="checkbox">
+    <div class="service-desc">Mantenimiento correctivo</div>
+    <input id="s2" class="service-price" type="number"></div>
+
+  <div class="service-row"><input type="checkbox">
+    <div class="service-desc">Carga de gas</div>
+    <input id="s3" class="service-price" type="number"></div>
+
+  <div class="service-row"><input type="checkbox">
+    <div class="service-desc">
+      Otro servicio<br>
+      <input id="desc_otro" placeholder="Descripción">
     </div>
+    <input id="s4" class="service-price" type="number"></div>
 
-    <div class="card">
-      <h2>Detalle de Servicios</h2>
-
-      <div class="service-row">
-        <input type="checkbox" onchange="calc()"> 
-        <div class="service-desc">Mantenimiento preventivo</div>
-        <input type="number" id="s1" class="service-price" placeholder="Gs.">
-      </div>
-
-      <div class="service-row">
-        <input type="checkbox" onchange="calc()"> 
-        <div class="service-desc">Mantenimiento correctivo</div>
-        <input type="number" id="s2" class="service-price" placeholder="Gs.">
-      </div>
-
-      <div class="service-row">
-        <input type="checkbox" onchange="calc()"> 
-        <div class="service-desc">Carga de gas</div>
-        <input type="number" id="s3" class="service-price" placeholder="Gs.">
-      </div>
-
-      <div class="service-row">
-        <input type="checkbox" onchange="calc()"> 
-        <div class="service-desc">
-          <div>Otro servicio:</div>
-          <input type="text" id="desc_otro" placeholder="Describir trabajo..." style="margin-top:2px; font-size:13px;">
-        </div>
-        <input type="number" id="s4" class="service-price" placeholder="Gs.">
-      </div>
-
-      <div class="total-box">
-        <div class="total">Total: Gs. <span id="total">0</span></div>
-        <div style="font-size:14px; color:#666;">IVA (10%) incluido: Gs. <span id="iva">0</span></div>
-      </div>
-    </div>
-
-    <div class="card" data-html2canvas-ignore="true">
-      <h2>Acciones</h2>
-      <button class="btn btn-blue" onclick="calc()">🔄 Actualizar Total</button>
-      <button class="btn btn-green" onclick="downloadPDF()">📄 Descargar PDF</button>
-      <button class="btn btn-green" onclick="sendWhats()">💚 Enviar Presupuesto por WhatsApp</button>
-      
-      <button id="btnInstalar" class="btn btn-gray" style="display:none; border: 2px solid #0b5ed7;">📲 Instalar App</button>
-      
-      <div style="margin-top:20px; border-top:1px solid #eee; padding-top:10px;">
-        <button class="btn btn-gray" onclick="viewHistory()">📜 Ver Historial</button>
-        <button class="btn btn-gray" onclick="clearHistory()">🗑️ Borrar Historial</button>
-      </div>
-    </div>
-
+  <div class="total-box">
+    <div class="total">Total: Gs. <span id="total">0</span></div>
+    IVA (10%) incluido: Gs. <span id="iva">0</span>
   </div>
+</div>
 
-  <div class="footer">
-    Generado a través de <b>GUA’Ĩ APP</b><br>
-    Plataforma digital de presupuestos técnicos de climatización<br>
-    Desarrollado por <b>RHAB Tech</b> – una división de <b>RHAB INTERNATIONAL TRADING</b><br>
-    guaiapp@rhabinternationaltrading.com
-  </div>
+<div class="card" data-html2canvas-ignore="true">
+  <button class="btn btn-blue" onclick="calc()">Actualizar total</button>
+  <button class="btn btn-green" onclick="downloadPDF()">Descargar PDF</button>
+  <button class="btn btn-green" onclick="sendWhats()">Enviar por WhatsApp</button>
+</div>
+
+</div>
+
+<div class="footer">
+<b>Garantía:</b> 7 días sobre el servicio realizado. No incluye repuestos.<br><br>
+
+<b>RHAB Tech</b> – División Tecnológica de<br>
+<b>RHAB INTERNATIONAL TRADING</b><br>
+San Lorenzo – Paraguay<br>
+Alberto Sánchez Benítez 9998<br>
+Barrio Las Mercedes<br><br>
+📧 guaiapp@rhabinternationaltrading.com<br>
+📧 info@rhabinternationaltrading.com
+</div>
 
 </div>
 
 <script>
-let deferredPrompt;
+function generarNumero(){
+ let c = Number(localStorage.getItem("guai_cont")||0)+1;
+ localStorage.setItem("guai_cont",c);
+ let f = new Date();
+ return `GUA-${f.getFullYear()}${(f.getMonth()+1).toString().padStart(2,"0")}${f.getDate().toString().padStart(2,"0")}-${c.toString().padStart(4,"0")}`;
+}
 
-// Instalación PWA
-window.addEventListener("beforeinstallprompt", e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const btn = document.getElementById("btnInstalar");
-  btn.style.display = "block";
-});
+const hoy = new Date();
+const venc = new Date(hoy); venc.setDate(hoy.getDate()+7);
 
-// Cálculo
+numPresupuesto.innerText = generarNumero();
+fecha.innerText = hoy.toLocaleDateString();
+vencimiento.innerText = venc.toLocaleDateString();
+
 function calc(){
-  let sum = 0;
-  ["s1","s2","s3","s4"].forEach(id=>{
-    const inputNum = document.getElementById(id);
-    const checkbox = inputNum.parentElement.querySelector('input[type="checkbox"]');
-    if(inputNum.value > 0) {
-        checkbox.checked = true;
-        sum += Number(inputNum.value);
-    } else {
-        checkbox.checked = false;
-    }
-  });
-  document.getElementById("total").innerText = sum.toLocaleString("es-PY");
-  document.getElementById("iva").innerText = Math.round(sum/11).toLocaleString("es-PY");
-  return sum; // Retornamos el total para usarlo en otras funciones
+ let sum=0;
+ ["s1","s2","s3","s4"].forEach(id=>{
+   let v=Number(document.getElementById(id).value||0);
+   sum+=v;
+ });
+ total.innerText=sum.toLocaleString("es-PY");
+ iva.innerText=Math.round(sum/11).toLocaleString("es-PY");
 }
 
-// PDF corregido (Incluye Logo y Footer, ignora botones)
 function downloadPDF(){
-  const element = document.getElementById("app-container");
-  
-  // Opciones para asegurar calidad y formato A4
-  const opt = {
-    margin:       0, // Margen 0 para que el header cubra todo
-    filename:     `Presupuesto_${document.getElementById("cliente").value || 'Cliente'}.pdf`,
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2, useCORS: true }, // useCORS ayuda a cargar la imagen del logo
-    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-  };
-
-  // Forzamos fondo blanco temporalmente para impresión limpia
-  element.classList.add("pdf-bg");
-  
-  html2pdf().set(opt).from(element).save().then(() => {
-    element.classList.remove("pdf-bg");
-  });
-  
-  saveToHistory(document.getElementById("total").innerText);
+ document.getElementById("app-container").classList.add("pdf-bg");
+ html2pdf().from(document.getElementById("app-container")).save();
 }
 
-// WhatsApp Mejorado (Detallado)
 function sendWhats(){
-  const cliente = document.getElementById("cliente").value;
-  const total = document.getElementById("total").innerText;
-  
-  if(total === "0") { alert("Por favor calcula el total antes de enviar."); return; }
-
-  let mensaje = `*PRESUPUESTO TÉCNICO - GUA’Ĩ APP*%0A`;
-  mensaje += `--------------------------------%0A`;
-  mensaje += `👤 *Cliente:* ${cliente}%0A`;
-  mensaje += `📅 *Fecha:* ${new Date().toLocaleDateString()}%0A%0A`;
-  mensaje += `*DETALLE DE SERVICIOS:*%0A`;
-
-  // Agregamos solo los servicios con precio
-  if(document.getElementById("s1").value > 0) mensaje += `✅ Mant. Preventivo: Gs. ${document.getElementById("s1").value}%0A`;
-  if(document.getElementById("s2").value > 0) mensaje += `✅ Mant. Correctivo: Gs. ${document.getElementById("s2").value}%0A`;
-  if(document.getElementById("s3").value > 0) mensaje += `✅ Carga de gas: Gs. ${document.getElementById("s3").value}%0A`;
-  
-  // Lógica para "Otro servicio"
-  let valOtro = document.getElementById("s4").value;
-  let descOtro = document.getElementById("desc_otro").value || "Servicio extra";
-  if(valOtro > 0) mensaje += `✅ ${descOtro}: Gs. ${valOtro}%0A`;
-
-  mensaje += `%0A--------------------------------%0A`;
-  mensaje += `💰 *TOTAL A PAGAR: Gs. ${total}*%0A`;
-  mensaje += `--------------------------------%0A`;
-  mensaje += `_Generado por RHAB Tech - RHAB INTERNATIONAL TRADING_`;
-
-  window.open("https://wa.me/?text=" + mensaje);
+ let msg=`*PRESUPUESTO ${numPresupuesto.innerText}*\nCliente: ${cliente.value}\nRUC: ${ruc.value}\nTotal: Gs. ${total.innerText}\nVálido hasta: ${vencimiento.innerText}\nGarantía: 7 días`;
+ window.open("https://wa.me/?text="+encodeURIComponent(msg));
 }
 
-// Historial y utilidades
-function saveToHistory(monto){
-    const h = JSON.parse(localStorage.getItem("guai_historial")||"[]");
-    h.push({fecha:new Date().toLocaleString(), cliente: document.getElementById("cliente").value, total: monto});
-    localStorage.setItem("guai_historial",JSON.stringify(h));
-}
-
-function viewHistory(){
-  const h = JSON.parse(localStorage.getItem("guai_historial")||"[]");
-  if(h.length === 0) { alert("Sin historial"); return; }
-  let msg = "Últimos 5 trabajos:\n";
-  h.slice(-5).reverse().forEach(i => msg += `${i.fecha} - ${i.cliente}: ${i.total}\n`);
-  alert(msg);
-}
-
-function clearHistory(){
-  if(confirm("¿Borrar todo el historial?")){
-    localStorage.removeItem("guai_historial");
-    alert("Historial borrado");
-  }
-}
-
-// Botón instalar lógica
-const btnInstalar = document.getElementById("btnInstalar");
-btnInstalar.onclick = async () => {
-  if (!deferredPrompt) {
-    alert("Para instalar: \n1. Abre en Chrome.\n2. Si ya la tienes, bórrala y reinstala.");
-    return;
-  }
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  if (outcome === 'accepted') {
-    btnInstalar.style.display = "none";
-  }
-};
-
-// Service Worker
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js");
-}
+if("serviceWorker" in navigator){ navigator.serviceWorker.register("sw.js"); }
 </script>
 
 </body>
