@@ -228,20 +228,38 @@ function calcular(){
 
 /* PDF */
 function descargarPDF(){
-  if(!detalle.length) return alert("Agregá servicios");
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF();
-  doc.text("PRESUPUESTO DE SERVICIO",20,20);
-  doc.text(`N° ${nro}`,160,20);
-  doc.text(`Cliente: ${cliente.value}`,20,35);
-  doc.text(`Técnico: ${tecnico.value}`,20,42);
-  let y=60;
-  detalle.forEach(d=>{doc.text("- "+d,25,y);y+=7});
-  doc.text(`TOTAL: Gs. ${total}`,20,y+6);
-  doc.addImage(firmaTec.toDataURL(),"PNG",20,y+15,70,25);
-  doc.addImage(firmaCli.toDataURL(),"PNG",110,y+15,70,25);
-  guardarEnHistorial();
-  doc.save(`Presupuesto-${nro}.pdf`);
+  calcular(); // 🔑 asegura detalle y total actualizados
+
+  if(!detalle.length){
+    alert("Agregá servicios");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.text("PRESUPUESTO DE SERVICIO", 20, 20);
+  doc.text("N° " + nro, 160, 20);
+  doc.text("Cliente: " + cliente.value, 20, 35);
+  doc.text("Técnico: " + tecnico.value, 20, 42);
+
+  let y = 60;
+  doc.text("Detalle de trabajos:", 20, y);
+  y += 8;
+
+  detalle.forEach((d, i) => {
+    doc.text((i+1) + ". " + d, 22, y);
+    y += 7;
+  });
+
+  doc.text("TOTAL: Gs. " + total, 20, y + 6);
+
+  doc.addImage(firmaTec.toDataURL(), "PNG", 20, y + 15, 70, 25);
+  doc.addImage(firmaCli.toDataURL(), "PNG", 110, y + 15, 70, 25);
+
+  guardarEnHistorial(); // ✅ GUARDA SIEMPRE
+
+  doc.save("Presupuesto_" + nro + ".pdf");
 }
 
 /* WHATSAPP */
