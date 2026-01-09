@@ -240,6 +240,7 @@ function descargarPDF(){
   doc.text(`TOTAL: Gs. ${total}`,20,y+6);
   doc.addImage(firmaTec.toDataURL(),"PNG",20,y+15,70,25);
   doc.addImage(firmaCli.toDataURL(),"PNG",110,y+15,70,25);
+  guardarEnHistorial();
   doc.save(`Presupuesto-${nro}.pdf`);
 }
 
