@@ -2,30 +2,28 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>GUA’Ĩ APP – Presupuestos Técnicos</title>
+<title>GUA’Ĩ APP – Presupuestos</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="manifest" href="manifest.json">
 
 <style>
 body{font-family:Arial;background:#f4f6f9;margin:0;padding:20px}
-header{text-align:center;margin-bottom:15px}
-header img{width:140px;margin-bottom:5px}
+header{text-align:center;margin-bottom:20px}
+header img{width:220px;margin-bottom:10px}
 header h1{margin:0;color:#1f3c88}
-.box{background:#fff;padding:20px;border-radius:10px;max-width:700px;margin:auto;box-shadow:0 5px 15px rgba(0,0,0,.1)}
+.box{background:#fff;padding:20px;border-radius:10px;max-width:720px;margin:auto;box-shadow:0 5px 15px rgba(0,0,0,.1)}
 input,button{width:100%;padding:10px;margin:6px 0;font-size:15px;border-radius:6px;border:1px solid #ccc}
 .service{border-bottom:1px solid #eee;padding-bottom:6px;margin-bottom:6px}
 button{background:#1f3c88;color:#fff;border:none;cursor:pointer}
 button.pdf{background:#28a745}
 button.wa{background:#25D366}
 button.sec{background:#6c757d}
-button.share{background:#0d6efd}
 button.install{background:#ff9800;color:#000;font-weight:bold}
-canvas{border:1px solid #ccc;border-radius:6px;touch-action:none}
-.total{font-weight:bold;font-size:18px;margin-top:10px}
+.total{font-weight:bold;font-size:20px;margin-top:12px}
 ul{padding-left:18px}
 footer{text-align:center;margin-top:20px;font-size:14px;color:#555}
 </style>
-
-<link rel="manifest" href="manifest.json">
 </head>
 
 <body>
@@ -63,7 +61,7 @@ Email: guaiapp@rhabinternationaltrading.com
 </div>
 
 <h3>Otros servicios</h3>
-<input id="otroNombre" placeholder="Descripción del servicio">
+<input id="otroNombre" placeholder="Descripción">
 <input id="otroPrecio" type="number" placeholder="Precio Gs.">
 <button class="sec" onclick="agregarOtro()">Agregar otro servicio</button>
 <ul id="otrosLista"></ul>
@@ -74,22 +72,12 @@ Email: guaiapp@rhabinternationaltrading.com
 
 <div class="total" id="total">Total: Gs. 0</div>
 
-<h3>Firma del técnico</h3>
-<canvas id="firmaTec" width="500" height="120"></canvas>
-<button class="sec" onclick="limpiarFirma('firmaTec')">Limpiar firma</button>
-
-<h3>Firma del cliente</h3>
-<canvas id="firmaCli" width="500" height="120"></canvas>
-<button class="sec" onclick="limpiarFirma('firmaCli')">Limpiar firma</button>
-
 <button onclick="calcular()">Calcular total</button>
 <button class="pdf" onclick="descargarPDF()">Descargar PDF</button>
 <button class="wa" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
-<button class="share" onclick="compartirApp()">Compartir App</button>
 
-<!-- BOTÓN INSTALAR APP -->
 <button id="installBtn" class="install" style="display:none">
-📲 Instalar GUA’Ĩ APP
+📲 Descargar / Instalar GUA’Ĩ APP
 </button>
 
 <hr>
@@ -105,111 +93,108 @@ Email: guaiapp@rhabinternationaltrading.com
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
-/* ========= VARIABLES ========= */
-let otros=[], detalle=[], total=0;
-let nro = Number(localStorage.getItem("nro_presupuesto")||0)+1;
-localStorage.setItem("nro_presupuesto",nro);
+/* ===== VARIABLES ===== */
+let otros = [];
+let detalle = [];
+let total = 0;
+let nro = Number(localStorage.getItem("nro_presupuesto") || 0) + 1;
+localStorage.setItem("nro_presupuesto", nro);
 
-/* ========= FIRMA ========= */
-function activarFirma(id){
-  const c=document.getElementById(id),ctx=c.getContext("2d");
-  let d=false; ctx.lineWidth=2; ctx.lineCap="round";
-  c.addEventListener("touchstart",e=>{
-    e.preventDefault(); d=true;
-    const t=e.touches[0],r=c.getBoundingClientRect();
-    ctx.beginPath(); ctx.moveTo(t.clientX-r.left,t.clientY-r.top);
-  },{passive:false});
-  c.addEventListener("touchmove",e=>{
-    if(!d)return; e.preventDefault();
-    const t=e.touches[0],r=c.getBoundingClientRect();
-    ctx.lineTo(t.clientX-r.left,t.clientY-r.top); ctx.stroke();
-  },{passive:false});
-  c.addEventListener("touchend",()=>d=false);
-}
-activarFirma("firmaTec"); activarFirma("firmaCli");
-function limpiarFirma(id){
-  const c=document.getElementById(id);
-  c.getContext("2d").clearRect(0,0,c.width,c.height);
-}
-
-/* ========= SERVICIOS ========= */
+/* ===== SERVICIOS ===== */
 function agregarOtro(){
-  if(!otroNombre.value||!otroPrecio.value) return;
-  otros.push({n:otroNombre.value,p:Number(otroPrecio.value)});
-  otrosLista.innerHTML+=`<li>${otroNombre.value} – Gs. ${otroPrecio.value}</li>`;
+  if(!otroNombre.value || !otroPrecio.value) return;
+  otros.push({n: otroNombre.value, p: Number(otroPrecio.value)});
+  otrosLista.innerHTML += `<li>${otroNombre.value} – Gs. ${otroPrecio.value}</li>`;
   otroNombre.value=""; otroPrecio.value="";
 }
 
 function calcular(){
-  total=0; detalle=[];
+  total = 0;
+  detalle = [];
+
   document.querySelectorAll(".service").forEach(s=>{
-    const chk=s.querySelector("input[type=checkbox]");
-    const p=Number(s.querySelector(".precio").value||0);
-    if(chk.checked&&p>0){
-      total+=p;
-      detalle.push(`${chk.dataset.nombre} – Gs. ${p}`);
+    const chk = s.querySelector("input[type=checkbox]");
+    const precio = Number(s.querySelector(".precio").value || 0);
+    if(chk.checked && precio > 0){
+      total += precio;
+      detalle.push(`${chk.dataset.nombre} – Gs. ${precio}`);
     }
   });
-  otros.forEach(o=>{total+=o.p;detalle.push(`${o.n} – Gs. ${o.p}`);});
-  const d=Number(descuento.value||0);
-  if(d>0){total-=d;detalle.push(`Descuento – Gs. ${d}`);}
+
+  otros.forEach(o=>{
+    total += o.p;
+    detalle.push(`${o.n} – Gs. ${o.p}`);
+  });
+
+  const desc = Number(descuento.value || 0);
+  if(desc > 0){
+    total -= desc;
+    detalle.push(`Descuento – Gs. ${desc}`);
+  }
+
   if(iva.checked){
-    const ivaMonto=Math.round(total*0.10);
-    total+=ivaMonto;
+    const ivaMonto = Math.round(total * 0.10);
+    total += ivaMonto;
     detalle.push(`IVA 10% – Gs. ${ivaMonto}`);
   }
-  total=Math.round(total);
-  totalDiv.innerText="Total: Gs. "+total;
+
+  total = Math.round(total);
+  document.getElementById("total").innerText = "Total: Gs. " + total;
 }
 
-/* ========= PDF ========= */
+/* ===== PDF ===== */
 function descargarPDF(){
   calcular();
   if(!detalle.length) return alert("Agregá servicios");
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF();
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
   doc.text("PRESUPUESTO DE SERVICIO",20,20);
-  doc.text("N° "+nro,160,20);
-  doc.text("Cliente: "+cliente.value,20,35);
-  doc.text("Técnico: "+tecnico.value,20,42);
-  let y=60;
+  doc.text("N° " + nro,160,20);
+  doc.text("Cliente: " + cliente.value,20,35);
+  doc.text("Técnico: " + tecnico.value,20,42);
+
+  let y = 60;
   doc.text("Detalle de trabajos:",20,y); y+=8;
-  detalle.forEach((d,i)=>{doc.text(`${i+1}. ${d}`,22,y);y+=7;});
-  doc.text("TOTAL: Gs. "+total,20,y+6);
-  doc.addImage(firmaTec.toDataURL(),"PNG",20,y+15,70,25);
-  doc.addImage(firmaCli.toDataURL(),"PNG",110,y+15,70,25);
+  detalle.forEach((d,i)=>{ doc.text(`${i+1}. ${d}`,22,y); y+=7; });
+
+  doc.text("TOTAL: Gs. " + total,20,y+6);
+
   guardarHistorial();
   doc.save("Presupuesto_"+nro+".pdf");
 }
 
-/* ========= HISTORIAL ========= */
-const KEY="historial_guaiapp";
+/* ===== HISTORIAL ===== */
+const KEY = "historial_guaiapp";
 function guardarHistorial(){
-  const h=JSON.parse(localStorage.getItem(KEY)||"[]");
-  h.push({nro,fecha:new Date().toLocaleString(),cliente:cliente.value,tecnico:tecnico.value,total});
-  localStorage.setItem(KEY,JSON.stringify(h));
+  const h = JSON.parse(localStorage.getItem(KEY) || "[]");
+  h.push({nro, fecha:new Date().toLocaleString(), cliente:cliente.value, tecnico:tecnico.value, total});
+  localStorage.setItem(KEY, JSON.stringify(h));
 }
 function verHistorial(){
   historial.innerHTML="";
-  const h=JSON.parse(localStorage.getItem(KEY)||"[]").reverse();
-  h.forEach(i=>historial.innerHTML+=`<li>#${i.nro} | ${i.fecha} | ${i.cliente} | Gs. ${i.total}</li>`);
+  const h = JSON.parse(localStorage.getItem(KEY) || "[]").reverse();
+  h.forEach(i=>{
+    historial.innerHTML += `<li>#${i.nro} | ${i.fecha} | ${i.cliente} | Gs. ${i.total}</li>`;
+  });
 }
 function exportarCSV(){
-  const h=JSON.parse(localStorage.getItem(KEY)||"[]");
-  if(!h.length)return;
-  let csv="Nro,Fecha,Cliente,Tecnico,Total\n";
-  h.forEach(i=>csv+=`${i.nro},"${i.fecha}","${i.cliente}","${i.tecnico}",${i.total}\n`);
+  const h = JSON.parse(localStorage.getItem(KEY) || "[]");
+  if(!h.length) return;
+  let csv = "Nro,Fecha,Cliente,Tecnico,Total\n";
+  h.forEach(i=> csv += `${i.nro},"${i.fecha}","${i.cliente}","${i.tecnico}",${i.total}\n`);
   const a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+  a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
   a.download="historial_presupuestos.csv";
   a.click();
 }
 
-/* ========= WHATSAPP ========= */
+/* ===== WHATSAPP ===== */
 function enviarWhatsApp(){
   calcular();
-  if(!detalle.length)return alert("Agregá servicios");
-  const msg=`RHAB INTERNATIONAL TRADING
+  if(!detalle.length) return alert("Agregá servicios");
+  const msg = `RHAB INTERNATIONAL TRADING
 Presupuesto N° ${nro}
 Cliente: ${cliente.value}
 
@@ -220,31 +205,22 @@ TOTAL: Gs. ${total}`;
   window.open("https://wa.me/?text="+encodeURIComponent(msg));
 }
 
-/* ========= COMPARTIR ========= */
-function compartirApp(){
-  if(navigator.share){
-    navigator.share({
-      title:"GUA’Ĩ APP",
-      text:"App profesional de presupuestos técnicos",
-      url:location.href
-    });
-  } else alert("Tu navegador no soporta compartir automático");
-}
-
-/* ========= INSTALAR APP (PWA) ========= */
+/* ===== INSTALAR APP (PWA) ===== */
 let deferredPrompt;
-const installBtn=document.getElementById("installBtn");
-window.addEventListener("beforeinstallprompt",e=>{
+const installBtn = document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt", e=>{
   e.preventDefault();
-  deferredPrompt=e;
-  installBtn.style.display="block";
+  deferredPrompt = e;
+  installBtn.style.display = "block";
 });
-installBtn.addEventListener("click",async()=>{
-  if(!deferredPrompt)return;
+
+installBtn.addEventListener("click", async ()=>{
+  if(!deferredPrompt) return;
   deferredPrompt.prompt();
   await deferredPrompt.userChoice;
-  deferredPrompt=null;
-  installBtn.style.display="none";
+  deferredPrompt = null;
+  installBtn.style.display = "none";
 });
 </script>
 
