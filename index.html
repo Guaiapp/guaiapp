@@ -9,172 +9,176 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
-body{font-family:Arial,Helvetica,sans-serif;background:#f4f6f8;margin:0}
-.hidden{display:none}
-
-/* ===================== APP ===================== */
-#app{max-width:800px;margin:auto;background:#fff}
-.header{background:#0b5ed7;color:#fff;text-align:center;padding:20px}
-.header img{height:80px}
-.card{padding:16px;margin:16px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+body{margin:0;font-family:Arial;background:#f4f6f8}
+.container{max-width:800px;margin:auto;background:#fff}
+.header{background:#0b5ed7;color:#fff;text-align:center;padding:16px}
+.header img{height:70px}
+.card{margin:16px;padding:16px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
 input{width:100%;padding:8px;margin-top:6px}
 button{width:100%;padding:14px;margin-top:10px;border:none;border-radius:8px;font-weight:bold}
+.blue{background:#0b5ed7;color:#fff}
+.green{background:#28a745;color:#fff}
+.gray{background:#6c757d;color:#fff}
+.footer{text-align:center;font-size:11px;color:#444;padding:20px}
+.hidden{display:none}
 
-/* ===================== PDF ===================== */
-#pdf{
-  width:210mm;
-  min-height:297mm;
-  padding:20mm;
-  background:#fff;
-  color:#000;
-}
-
-#pdf table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:12px;
-}
-
-#pdf th,#pdf td{
-  border:1px solid #444;
-  padding:6px;
-}
-
-.pdf-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:10px;
-}
-
-.pdf-header img{height:70px}
-
-.pdf-footer{
-  font-size:10px;
-  margin-top:20px;
-  border-top:1px solid #000;
-  padding-top:8px;
-}
+/* PDF */
+#pdf{width:210mm;min-height:297mm;padding:20mm;background:#fff}
+#pdf table{width:100%;border-collapse:collapse;font-size:12px}
+#pdf th,#pdf td{border:1px solid #333;padding:6px}
 </style>
 </head>
 
 <body>
 
-<!-- ===================== APP ===================== -->
-<div id="app">
-  <div class="header">
-    <img src="logotipo-guaiapp.png">
-    <div>PRESUPUESTO TÉCNICO</div>
-  </div>
+<div class="container">
 
-  <div class="card">
-    <input id="cliente" placeholder="Cliente">
-    <input id="rucCliente" placeholder="RUC Cliente">
-    <input id="telCliente" placeholder="Teléfono Cliente">
-    <input id="tecnico" placeholder="Técnico">
-    <input id="telTecnico" placeholder="Teléfono Técnico">
-    <input id="empresa" placeholder="Empresa / Taller">
-  </div>
-
-  <div class="card">
-    <input id="s1" placeholder="Mantenimiento preventivo Gs">
-    <input id="s2" placeholder="Mantenimiento correctivo Gs">
-    <input id="s3" placeholder="Carga de gas Gs">
-    <input id="desc_otro" placeholder="Otro servicio">
-    <input id="s4" placeholder="Precio otro servicio">
-  </div>
-
-  <div class="card">
-    <button style="background:#0b5ed7;color:#fff" onclick="calc()">Calcular</button>
-    <button style="background:#28a745;color:#fff" onclick="exportPDF()">Descargar PDF Profesional</button>
-  </div>
+<div class="header">
+  <img src="logotipo-guaiapp.png">
+  <div>PRESUPUESTO TÉCNICO DE CLIMATIZACIÓN</div>
 </div>
 
-<!-- ===================== PDF ===================== -->
+<div class="card">
+  <input id="cliente" placeholder="Cliente">
+  <input id="rucCliente" placeholder="RUC Cliente">
+  <input id="telCliente" placeholder="Teléfono Cliente">
+  <input id="tecnico" placeholder="Técnico Responsable">
+  <input id="telTecnico" placeholder="Teléfono Técnico">
+  <input id="empresa" placeholder="Empresa / Taller">
+</div>
+
+<div class="card">
+  <input id="s1" placeholder="Mantenimiento preventivo Gs">
+  <input id="s2" placeholder="Mantenimiento correctivo Gs">
+  <input id="s3" placeholder="Carga de gas Gs">
+  <input id="desc4" placeholder="Otro servicio">
+  <input id="s4" placeholder="Precio otro servicio Gs">
+</div>
+
+<div class="card">
+  <div><b>Subtotal:</b> Gs. <span id="sub">0</span></div>
+  <div><b>IVA 10%:</b> Gs. <span id="iva">0</span></div>
+  <div style="font-size:18px"><b>Total:</b> Gs. <span id="total">0</span></div>
+</div>
+
+<div class="card">
+  <button class="blue" onclick="calcular()">Calcular</button>
+  <button class="green" onclick="exportPDF()">Descargar PDF Profesional</button>
+  <button class="green" onclick="enviarWhats()">Enviar por WhatsApp</button>
+  <button id="btnInstalar" class="gray" style="display:none">Instalar App</button>
+  <button class="gray" onclick="compartir()">Compartir App</button>
+</div>
+
+<div class="footer">
+<b>GUA’Ĩ APP</b><br>
+Desarrollado por <b>RHAB Tech</b> – División de <b>RHAB INTERNATIONAL TRADING</b><br>
+San Lorenzo – Paraguay · Alberto Sánchez Benítez 9998<br>
+📧 guaiapp@rhabinternationaltrading.com
+</div>
+
+</div>
+
+<!-- PDF -->
 <div id="pdf" class="hidden">
+<h3>Presupuesto Técnico</h3>
+<p>N°: <span id="pnum"></span><br>
+Fecha: <span id="pfecha"></span><br>
+Válido hasta: <span id="pvence"></span></p>
 
-  <div class="pdf-header">
-    <img src="logotipo-guaiapp.png">
-    <div style="text-align:right">
-      <b>Presupuesto Nº:</b> <span id="pdfNum"></span><br>
-      <b>Fecha:</b> <span id="pdfFecha"></span><br>
-      <b>Válido hasta:</b> <span id="pdfVence"></span>
-    </div>
-  </div>
+<table>
+<tr><td>Cliente</td><td id="pcliente"></td></tr>
+<tr><td>RUC</td><td id="pruc"></td></tr>
+<tr><td>Teléfono</td><td id="ptel"></td></tr>
+<tr><td>Técnico</td><td id="ptecnico"></td></tr>
+<tr><td>Empresa</td><td id="pempresa"></td></tr>
+</table>
 
-  <table>
-    <tr><td><b>Cliente</b></td><td id="pdfCliente"></td></tr>
-    <tr><td><b>RUC</b></td><td id="pdfRuc"></td></tr>
-    <tr><td><b>Teléfono</b></td><td id="pdfTelCliente"></td></tr>
-    <tr><td><b>Técnico</b></td><td id="pdfTecnico"></td></tr>
-    <tr><td><b>Tel. Técnico</b></td><td id="pdfTelTecnico"></td></tr>
-    <tr><td><b>Empresa</b></td><td id="pdfEmpresa"></td></tr>
-  </table>
+<br>
 
-  <br>
+<table>
+<tr><th>Descripción</th><th>Importe</th></tr>
+<tr><td>Mantenimiento preventivo</td><td id="ps1"></td></tr>
+<tr><td>Mantenimiento correctivo</td><td id="ps2"></td></tr>
+<tr><td>Carga de gas</td><td id="ps3"></td></tr>
+<tr><td id="pdesc4"></td><td id="ps4"></td></tr>
+<tr><td><b>Subtotal</b></td><td id="psub"></td></tr>
+<tr><td><b>IVA 10%</b></td><td id="piva"></td></tr>
+<tr><td><b>Total</b></td><td id="ptotal"></td></tr>
+</table>
 
-  <table>
-    <tr>
-      <th>Descripción</th>
-      <th>Precio (Gs)</th>
-    </tr>
-    <tr><td>Mantenimiento preventivo</td><td id="p1"></td></tr>
-    <tr><td>Mantenimiento correctivo</td><td id="p2"></td></tr>
-    <tr><td>Carga de gas</td><td id="p3"></td></tr>
-    <tr><td id="pDesc"></td><td id="p4"></td></tr>
-    <tr>
-      <td><b>TOTAL</b></td>
-      <td><b id="pTotal"></b></td>
-    </tr>
-  </table>
+<p><b>Garantía:</b> 7 días sobre el servicio realizado.</p>
 
-  <p><b>Garantía:</b> 7 días sobre el servicio realizado. No incluye repuestos.</p>
-
-  <div class="pdf-footer">
-    RHAB Tech – División tecnológica de RHAB INTERNATIONAL TRADING<br>
-    San Lorenzo – Paraguay | Alberto Sánchez Benítez 9998<br>
-    Barrio Las Mercedes<br>
-    📧 guaiapp@rhabinternationaltrading.com
-  </div>
-
+<p style="font-size:10px">
+RHAB Tech – RHAB INTERNATIONAL TRADING<br>
+San Lorenzo – Paraguay · Alberto Sánchez Benítez 9998<br>
+guaiapp@rhabinternationaltrading.com
+</p>
 </div>
 
 <script>
-function calc(){
-  let t=(+s1.value||0)+(+s2.value||0)+(+s3.value||0)+(+s4.value||0);
-  alert("Total: Gs "+t.toLocaleString("es-PY"));
+function calcular(){
+  let total=(+s1.value||0)+(+s2.value||0)+(+s3.value||0)+(+s4.value||0);
+  let sub=total/1.1;
+  let iva=total-sub;
+  sub=Math.round(sub); iva=Math.round(iva);
+
+  document.getElementById("sub").innerText=sub.toLocaleString("es-PY");
+  document.getElementById("iva").innerText=iva.toLocaleString("es-PY");
+  document.getElementById("total").innerText=total.toLocaleString("es-PY");
 }
 
 function exportPDF(){
-  const n="GUA-"+Date.now();
-  const f=new Date();
-  const v=new Date();v.setDate(f.getDate()+7);
+  calcular();
+  let n="GUA-"+Date.now();
+  let f=new Date(); let v=new Date(); v.setDate(f.getDate()+7);
 
-  pdfNum.innerText=n;
-  pdfFecha.innerText=f.toLocaleDateString();
-  pdfVence.innerText=v.toLocaleDateString();
+  pnum.innerText=n;
+  pfecha.innerText=f.toLocaleDateString();
+  pvence.innerText=v.toLocaleDateString();
 
-  pdfCliente.innerText=cliente.value;
-  pdfRuc.innerText=rucCliente.value;
-  pdfTelCliente.innerText=telCliente.value;
-  pdfTecnico.innerText=tecnico.value;
-  pdfTelTecnico.innerText=telTecnico.value;
-  pdfEmpresa.innerText=empresa.value;
+  pcliente.innerText=cliente.value;
+  pruc.innerText=rucCliente.value;
+  ptel.innerText=telCliente.value;
+  ptecnico.innerText=tecnico.value;
+  pempresa.innerText=empresa.value;
 
-  p1.innerText=s1.value;
-  p2.innerText=s2.value;
-  p3.innerText=s3.value;
-  pDesc.innerText=desc_otro.value;
-  p4.innerText=s4.value;
+  ps1.innerText=s1.value;
+  ps2.innerText=s2.value;
+  ps3.innerText=s3.value;
+  pdesc4.innerText=desc4.value;
+  ps4.innerText=s4.value;
 
-  pTotal.innerText=((+s1.value||0)+(+s2.value||0)+(+s3.value||0)+(+s4.value||0)).toLocaleString("es-PY");
+  psub.innerText=sub.innerText;
+  piva.innerText=iva.innerText;
+  ptotal.innerText=total.innerText;
 
-  document.getElementById("pdf").classList.remove("hidden");
-
-  html2pdf().from(pdf).save("Presupuesto_"+n+".pdf").then(()=>{
-    document.getElementById("pdf").classList.add("hidden");
-  });
+  pdf.classList.remove("hidden");
+  html2pdf().from(pdf).save("Presupuesto_"+n+".pdf").then(()=>pdf.classList.add("hidden"));
 }
+
+function enviarWhats(){
+  calcular();
+  let msg=`Presupuesto GUA’Ĩ APP\nCliente: ${cliente.value}\nTotal: Gs. ${total.innerText}`;
+  window.open("https://wa.me/?text="+encodeURIComponent(msg));
+}
+
+function compartir(){
+  if(navigator.share){
+    navigator.share({title:"GUA’Ĩ APP",url:location.href});
+  }else alert("Compartir no disponible");
+}
+
+// PWA
+let deferredPrompt;
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  btnInstalar.style.display="block";
+});
+btnInstalar.onclick=()=>{deferredPrompt.prompt();};
+
+// SW
+if("serviceWorker"in navigator){navigator.serviceWorker.register("sw.js");}
 </script>
 
 </body>
