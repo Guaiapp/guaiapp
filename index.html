@@ -1,227 +1,158 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>GUA'Ĩ APP – Presupuestos rápidos</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>GUA´I APP – Presupuesto PRO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f5f7fa;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-      color: #333;
-    }
-
-    header {
-      background: #ffffff;
-      padding: 30px 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    header img {
-      max-width: 220px;
-      margin-bottom: 10px;
-    }
-
-    h1 {
-      margin: 10px 0 5px;
-      color: #1f3c88;
-    }
-
-    .tag {
-      display: inline-block;
-      background: #f59e0b;
-      color: #fff;
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-
-    main {
-      padding: 30px 20px;
-    }
-
-    h2 {
-      margin-bottom: 20px;
-    }
-
-    input {
-      width: 100%;
-      max-width: 420px;
-      padding: 14px;
-      margin: 10px auto;
-      display: block;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
-
-    button {
-      background: #1f3c88;
-      color: #fff;
-      border: none;
-      padding: 14px 30px;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 15px;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    #installBtn {
-      background: #28a745;
-      display: none;
-    }
-
-    #resultado {
-      margin-top: 25px;
-      font-size: 18px;
-      color: #1f3c88;
-      font-weight: bold;
-    }
-
-    footer {
-      margin-top: 40px;
-      padding: 20px;
-      font-size: 14px;
-      color: #555;
-    }
-
-    footer a {
-      color: #1f3c88;
-      text-decoration: none;
-      display: block;
-      margin-top: 8px;
-    }
-  </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+body{font-family:Arial;background:#f4f6f9;margin:0;padding:20px}
+h1{text-align:center;color:#1f3c88}
+.box{background:#fff;padding:20px;border-radius:10px;max-width:560px;margin:auto;box-shadow:0 5px 15px rgba(0,0,0,.1)}
+input,button{width:100%;padding:10px;margin:6px 0;font-size:15px;border-radius:6px;border:1px solid #ccc}
+.service{border-bottom:1px solid #eee;padding-bottom:6px;margin-bottom:6px}
+.total{font-weight:bold;font-size:18px;margin-top:10px}
+button{background:#1f3c88;color:#fff;border:none}
+button.pdf{background:#28a745}
+button.wa{background:#25D366}
+button.add{background:#6c757d}
+canvas{border:1px solid #ccc;border-radius:6px}
+footer{text-align:center;margin-top:20px;font-size:14px}
+</style>
 </head>
 
 <body>
 
-  <header>
-    <img src="logotipo-guaiapp.png" alt="Gua'ĩ APP Logo">
-    <h1>GUA'Ĩ APP</h1>
-    <p>Da la vuelta a tu manera de trabajar</p>
-    <div class="tag">MVP EN DESARROLLO</div>
-  </header>
+<h1>GUA´I APP</h1>
 
-  <main>
-    <h2>Presupuesto rápido</h2>
+<div class="box">
 
-    <input type="text" id="cliente" placeholder="Nombre del cliente">
-    <input type="text" id="servicio" placeholder="Servicio a realizar">
-    <input type="number" id="monto" placeholder="Monto en Gs.">
+<input id="cliente" placeholder="Nombre del cliente">
 
-    <button onclick="generarPresupuesto()">Generar presupuesto</button>
-    <button onclick="descargarPDF()" style="margin-top:10px; background:#28a745;">
-  📄 Descargar PDF
-    </button>
+<h3>Servicios</h3>
 
-    <!-- BOTÓN DESCARGA APP -->
-    <button id="installBtn">📥 Descargar Gua’ĩ APP</button>
+<div class="service">
+<label><input type="checkbox" data-nombre="Mantenimiento preventivo"> Mantenimiento preventivo</label>
+<input type="number" placeholder="Precio Gs." class="precio">
+</div>
 
-    <div id="resultado"></div>
-  </main>
+<div class="service">
+<label><input type="checkbox" data-nombre="Mantenimiento correctivo"> Mantenimiento correctivo</label>
+<input type="number" placeholder="Precio Gs." class="precio">
+</div>
 
-  <footer>
-    Desarrollado por <strong>RHAB Tech</strong>
-    <a href="https://wa.me/595XXXXXXXXX" target="_blank">📱 WhatsApp Soporte</a>
-    <a href="mailto:guaiapp@rhabinternationaltrading.com">
-      ✉️ guaiapp@rhabinternationaltrading.com
-    </a>
-  </footer>
+<div class="service">
+<label><input type="checkbox" data-nombre="Carga de gas"> Carga de gas</label>
+<input type="number" placeholder="Precio Gs." class="precio">
+</div>
 
-  <script>
-    function generarPresupuesto() {
-      const cliente = document.getElementById("cliente").value;
-      const servicio = document.getElementById("servicio").value;
-      const monto = document.getElementById("monto").value;
+<div class="service">
+<label><input type="checkbox" data-nombre="Instalación equipo nuevo"> Instalación equipo nuevo</label>
+<input type="number" placeholder="Precio Gs." class="precio">
+</div>
 
-      if (!cliente || !servicio || !monto) {
-        alert("Completá todos los campos");
-        return;
-      }
+<div class="service">
+<label><input type="checkbox" data-nombre="Desinstalación de equipo"> Desinstalación de equipo</label>
+<input type="number" placeholder="Precio Gs." class="precio">
+</div>
 
-      document.getElementById("resultado").innerHTML =
-        `Presupuesto generado para <b>${cliente}</b><br>
-         Servicio: ${servicio}<br>
-         Monto: <b>Gs. ${monto}</b>`;
-    }
+<h3>Otros servicios</h3>
+<input id="otroNombre" placeholder="Descripción del servicio">
+<input id="otroPrecio" type="number" placeholder="Precio Gs.">
+<button class="add" onclick="agregarOtro()">➕ Agregar servicio</button>
 
-    /* ===== BOTÓN DESCARGAR APP (PWA) ===== */
-    let deferredPrompt;
-    const installBtn = document.getElementById("installBtn");
+<ul id="listaOtros"></ul>
 
-    window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = "inline-block";
-    });
+<h3>Descuento</h3>
+<input id="descuento" type="number" placeholder="Descuento en Gs.">
 
-    installBtn.addEventListener("click", async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      installBtn.style.display = "none";
-    });
-  <script>
-function descargarPDF() {
-  const cliente = document.getElementById("cliente").value;
-  const servicio = document.getElementById("servicio").value;
-  const monto = document.getElementById("monto").value;
+<label><input type="checkbox" id="iva"> Aplicar IVA 10%</label>
 
-  if (!cliente || !servicio || !monto) {
-    alert("Completá todos los campos antes de descargar el PDF");
-    return;
-  }
+<div class="total" id="total">Total: Gs. 0</div>
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+<h3>Firma del técnico</h3>
+<canvas id="firma" width="480" height="150"></canvas>
+<button onclick="limpiarFirma()">Limpiar firma</button>
 
-  const fecha = new Date().toLocaleDateString();
-  const nro = Math.floor(Math.random() * 100000);
+<button onclick="calcular()">Calcular total</button>
+<button class="pdf" onclick="descargarPDF()">Descargar PDF</button>
+<button class="wa" onclick="enviarWhatsApp()">Enviar por WhatsApp</button>
 
-  const logo = new Image();
-  logo.src = "logo-guaiapp.png";
+</div>
 
-  logo.onload = function () {
-    doc.addImage(logo, "PNG", 80, 10, 50, 20);
+<footer>
+<strong>RHAB Tech</strong><br>
+guaiapp@rhabinternationaltrading.com
+</footer>
 
-    doc.setFontSize(16);
-    doc.text("PRESUPUESTO DE SERVICIO", 60, 40);
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    doc.setFontSize(11);
-    doc.text(`Fecha: ${fecha}`, 20, 60);
-    doc.text(`Presupuesto N°: ${nro}`, 20, 68);
+<script>
+let nro=localStorage.getItem("presupuesto")||0;
+nro++;localStorage.setItem("presupuesto",nro);
 
-    doc.line(20, 72, 190, 72);
+const canvas=document.getElementById("firma"),ctx=canvas.getContext("2d");
+let dib=false;
+canvas.addEventListener("touchstart",()=>dib=true);
+canvas.addEventListener("touchend",()=>dib=false);
+canvas.addEventListener("touchmove",e=>{
+if(!dib)return;
+const t=e.touches[0],r=canvas.getBoundingClientRect();
+ctx.lineTo(t.clientX-r.left,t.clientY-r.top);ctx.stroke();
+});
+function limpiarFirma(){ctx.clearRect(0,0,canvas.width,canvas.height)}
 
-    doc.setFontSize(12);
-    doc.text(`Cliente: ${cliente}`, 20, 90);
-    doc.text(`Servicio: ${servicio}`, 20, 100);
-    doc.text(`Monto: Gs. ${monto}`, 20, 110);
+let otros=[];
 
-    doc.line(20, 115, 190, 115);
+function agregarOtro(){
+const n=otroNombre.value,p=otroPrecio.value;
+if(!n||!p)return alert("Completa servicio y precio");
+otros.push({n,p});
+listaOtros.innerHTML+=`<li>${n} – Gs. ${p}</li>`;
+otroNombre.value="";otroPrecio.value="";
+}
 
-    doc.setFontSize(10);
-    doc.text("GUA´Ĩ APP – Aplicación inteligente", 20, 130);
-    doc.text("RHAB INTERNATIONAL TRADING", 20, 138);
-    doc.text("WhatsApp: +595 992 755 100", 20, 146);
-    doc.text("Email: guaiapp@rhabinternationaltrading.com", 20, 154);
+let total=0,detalle=[];
 
-    doc.save(`Presupuesto-${cliente}.pdf`);
-  };
+function calcular(){
+total=0;detalle=[];
+document.querySelectorAll(".service").forEach(s=>{
+const c=s.querySelector("input[type=checkbox]");
+const p=s.querySelector(".precio").value;
+if(c.checked && p){
+total+=+p;
+detalle.push(`${c.dataset.nombre} – Gs. ${p}`);
+}
+});
+otros.forEach(o=>{total+=+o.p;detalle.push(`${o.n} – Gs. ${o.p}`)});
+const desc=+descuento.value||0;
+total-=desc;
+if(iva.checked) total*=1.10;
+document.getElementById("total").innerText="Total: Gs. "+Math.round(total);
+}
+
+function descargarPDF(){
+if(!detalle.length)return alert("Agregá servicios");
+const {jsPDF}=window.jspdf;
+const doc=new jsPDF();
+doc.text("PRESUPUESTO DE SERVICIO",20,20);
+doc.text(`N° ${nro}`,160,20);
+doc.text(`Cliente: ${cliente.value}`,20,30);
+doc.text(`Fecha: ${new Date().toLocaleDateString()}`,20,36);
+let y=50;
+detalle.forEach(d=>{doc.text("- "+d,25,y);y+=7});
+if(descuento.value) doc.text(`Descuento: Gs. ${descuento.value}`,20,y+=5);
+doc.text(`TOTAL: Gs. ${Math.round(total)}`,20,y+=8);
+doc.addImage(canvas.toDataURL(),"PNG",20,y+10,80,30);
+doc.text("Firma técnico",20,y+45);
+doc.save(`Presupuesto-${nro}.pdf`);
+}
+
+function enviarWhatsApp(){
+let msg=`Presupuesto N° ${nro}%0ACliente: ${cliente.value}%0ATotal: Gs. ${Math.round(total)}`;
+window.open(`https://wa.me/?text=${msg}`);
 }
 </script>
-  
+
 </body>
 </html>
