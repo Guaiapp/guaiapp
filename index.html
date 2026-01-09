@@ -242,6 +242,58 @@ function descargarPDF(){
 function enviarWhatsApp(){
   const msg=`RHAB INTERNATIONAL TRADING%0APresupuesto N° ${nro}%0ACliente: ${cliente.value}%0ATotal: Gs. ${total}`;
   window.open(`https://wa.me/?text=${msg}`);
+  /* ===== HISTORIAL OFFLINE (PASO 3.1) ===== */
+const KEY_HISTORIAL = "guaiapp_historial";
+
+function guardarEnHistorial() {
+  const item = {
+    nro,
+    cliente: cliente.value || "",
+    tecnico: tecnico.value || "",
+    fecha: new Date().toLocaleString(),
+    total
+  };
+
+  const historial = JSON.parse(localStorage.getItem(KEY_HISTORIAL) || "[]");
+  historial.push(item);
+  localStorage.setItem(KEY_HISTORIAL, JSON.stringify(historial));
+}
+
+function verHistorial() {
+  const ul = document.getElementById("historial");
+  ul.innerHTML = "";
+  const historial = JSON.parse(localStorage.getItem(KEY_HISTORIAL) || "[]");
+
+  if (!historial.length) {
+    ul.innerHTML = "<li>No hay presupuestos guardados.</li>";
+    return;
+  }
+
+  historial.slice().reverse().forEach(h => {
+    const li = document.createElement("li");
+    li.textContent = `#${h.nro} | ${h.fecha} | ${h.cliente} | Gs. ${h.total}`;
+    ul.appendChild(li);
+  });
+}
+
+/* ===== EXPORTAR CSV (LIVIANO) ===== */
+function exportarCSV() {
+  const historial = JSON.parse(localStorage.getItem(KEY_HISTORIAL) || "[]");
+  if (!historial.length) return alert("No hay datos para exportar");
+
+  const encabezado = "Nro,Fecha,Cliente,Tecnico,Total\n";
+  const filas = historial
+    .map(h => `${h.nro},"${h.fecha}","${h.cliente}","${h.tecnico}",${h.total}`)
+    .join("\n");
+
+  const blob = new Blob([encabezado + filas], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "historial_presupuestos.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
 }
 </script>
 
