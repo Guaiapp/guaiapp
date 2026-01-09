@@ -1,18 +1,19 @@
 {
-  "name": "Gua’ĩ APP",
-  "short_name": "Gua’ĩ",
-  "start_url": "./index.html",
+  "name": "Guai App",
+  "short_name": "Guai",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#f5f7fa",
   "theme_color": "#1f3c88",
   "icons": [
     {
-      "src": "logotipo-guaiapp.png",
+      "src": "logo-guaiapp.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "logotipo-guaiapp.png",
+      "src": "logo-guaiapp.png",
       "sizes": "512x512",
       "type": "image/png"
     }
