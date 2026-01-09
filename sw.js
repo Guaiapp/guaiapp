@@ -1,11 +1,32 @@
+const CACHE_NAME = "guaiapp-v2";
+
+const FILES_TO_CACHE = [
+  "/guaiapp/",
+  "/guaiapp/index.html",
+  "/guaiapp/manifest.json",
+  "/guaiapp/logotipo-guaiapp.png"
+];
+
 self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
+  );
   self.skipWaiting();
 });
 
 self.addEventListener("activate", event => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
+      )
+    )
+  );
+  self.clients.claim();
 });
 
 self.addEventListener("fetch", event => {
-  // Passthrough: deja que el navegador maneje la red
+  event.respondWith(
+    caches.match(event.request).then(resp => resp || fetch(event.request))
+  );
 });
