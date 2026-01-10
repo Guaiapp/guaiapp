@@ -9,6 +9,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
+ @media print {
+  .pdf-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    z-index: 1000;
+    page-break-inside: avoid;
+  }
+
+  #pdf {
+    padding-top: 120px;
+  }
+}
 body{margin:0;font-family:Arial;background:#f4f6f8}
 .container{max-width:800px;margin:auto;background:#fff}
 .header{background:#0b5ed7;color:#fff;text-align:center;padding:16px}
@@ -21,7 +36,41 @@ button{width:100%;padding:14px;margin-top:10px;border:none;border-radius:8px;fon
 .gray{background:#6c757d;color:#fff}
 .footer{text-align:center;font-size:11px;color:#444;padding:20px}
 .hidden{display:none}
+#pdf table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
 
+#pdf th,
+#pdf td {
+  border: 1px solid #333;
+  padding: 6px 8px;
+  font-size: 11px;
+  word-wrap: break-word;
+}
+  #pdf th:nth-child(2),
+#pdf td:nth-child(2) {
+  text-align: right;
+  width: 35%;
+}
+  <tr class="subtotal">
+  <td>Subtotal</td>
+  <td id="pdfSub"></td>
+</tr>
+<tr class="iva">
+  <td>IVA 10%</td>
+  <td id="pdfIva"></td>
+</tr>
+<tr class="total-final">
+  <td>Total</td>
+  <td id="pdfTotal"></td>
+</tr>
+
+#pdf th:nth-child(1),
+#pdf td:nth-child(1) {
+  width: 65%;
+}
 /* ===== PDF TAMAÑO OFICIO (LEGAL) ===== */
 #pdf{
   width: 216mm;
@@ -39,10 +88,16 @@ button{width:100%;padding:14px;margin-top:10px;border:none;border-radius:8px;fon
 <body>
 
 <div id="pdf">
-
-<div class="header">
-  <img src="logotipo-guaiapp.png">
-  <div>PRESUPUESTO TÉCNICO DE CLIMATIZACIÓN</div>
+  
+<div class="pdf-header">
+  <img src="logotipo-guaiapp.png" class="logo-left">
+  <div class="header-text">
+    <h2>Presupuesto Técnico</h2>
+    <div>N°: <span id="nPresupuesto"></span></div>
+    <div>Fecha: <span id="fecha"></span></div>
+    <div>Válido hasta: <span id="vence"></span></div>
+  </div>
+  <img src="logo-tecnico.png" class="logo-right">
 </div>
 
 <div class="card">
@@ -69,11 +124,27 @@ button{width:100%;padding:14px;margin-top:10px;border:none;border-radius:8px;fon
 </div>
 
 <div class="card">
-  <button class="blue" onclick="calcular()">Calcular</button>
-  <button class="green" onclick="exportPDF()">Descargar PDF Profesional</button>
-  <button class="green" onclick="enviarWhats()">Enviar por WhatsApp</button>
-  <button id="btnInstalar" class="gray" style="display:none">Instalar App</button>
-  <button class="gray" onclick="compartir()">Compartir App</button>
+
+  <button class="btn blue" onclick="calcular()">
+    🔄 Calcular
+  </button>
+
+  <button class="btn green" onclick="downloadPDF()">
+    📄 Descargar PDF Profesional
+  </button>
+
+  <button class="btn whatsapp" onclick="enviarWhats()">
+    💬 Enviar por WhatsApp
+  </button>
+
+  <button id="btnInstalar" class="btn gray" style="display:none">
+    📲 Instalar App
+  </button>
+
+  <button class="btn gray" onclick="compartir()">
+    🔗 Compartir App
+  </button>
+
 </div>
 
 <div class="footer">
@@ -84,21 +155,6 @@ San Lorenzo – Paraguay · Alberto Sánchez Benítez 9998<br>
 </div>
 
 </div>
-
-<!-- PDF -->
-<div id="pdf" class="hidden">
-<h3>Presupuesto Técnico</h3>
-<p>N°: <span id="pnum"></span><br>
-Fecha: <span id="pfecha"></span><br>
-Válido hasta: <span id="pvence"></span></p>
-
-<table>
-<tr><td>Cliente</td><td id="pcliente"></td></tr>
-<tr><td>RUC</td><td id="pruc"></td></tr>
-<tr><td>Teléfono</td><td id="ptel"></td></tr>
-<tr><td>Técnico</td><td id="ptecnico"></td></tr>
-<tr><td>Empresa</td><td id="pempresa"></td></tr>
-</table>
 
 <br>
 
@@ -113,9 +169,9 @@ Válido hasta: <span id="pvence"></span></p>
 <tr><td><b>Total</b></td><td id="ptotal"></td></tr>
 </table>
 
-<p><b>Garantía:</b> 7 días sobre el servicio realizado.</p>
+<p><b>Garantía:</b> 3 meses sobre el servicio realizado.</p>
 
-<p style="font-size:10px">
+<p style="font-size:11px">
 RHAB Tech – RHAB INTERNATIONAL TRADING<br>
 San Lorenzo – Paraguay · Alberto Sánchez Benítez 9998<br>
 guaiapp@rhabinternationaltrading.com
@@ -249,7 +305,7 @@ function downloadPDF(){
   const nro = document.getElementById("nPresupuesto")?.innerText || Date.now();
 
   html2pdf().set({
-    margin: [15, 15, 20, 15], // top, left, bottom, right
+    margin: [10, 10, 15, 10], // top, left, bottom, right
     filename: "Presupuesto_GUAI_APP_" + nro + ".pdf",
     image: { type: "jpeg", quality: 0.98 },
     html2canvas: {
@@ -258,11 +314,11 @@ function downloadPDF(){
       allowTaint: true,
       backgroundColor: "#ffffff"
     },
-    jsPDF: {
-      unit: "mm",
-      format: "a4",
-      orientation: "portrait"
-    }
+   jsPDF: {
+  unit: "mm",
+  format: [216, 356], // OFICIO / LEGAL real
+  orientation: "portrait"
+   }
   }).from(pdf).save();
 }
   
