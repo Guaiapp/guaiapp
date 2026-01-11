@@ -15,27 +15,45 @@
 :root { --primary: #0b5ed7; --bg-app: #D32F2F; --text-dark: #24292f; }
 body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-app); padding-bottom: 80px; }
 
-/* ================= LOGIN ================= */
+/* ================= LOGIN (ACTUALIZADO CON LOGO GRANDE) ================= */
 #login-screen {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: #ffffff; z-index: 9999;
     display: flex; flex-direction: column; align-items: center;
-    padding-top: 40px; box-sizing: border-box; color: var(--text-dark); overflow-y: auto;
+    padding-top: 50px; box-sizing: border-box; color: var(--text-dark); overflow-y: auto;
 }
-.login-logo-img { width: 80px; height: auto; margin-bottom: 20px; }
+/* CAMBIOS AQUÍ: Logo mucho más grande y sin recorte circular */
+.login-logo-img {
+    width: 200px; /* Aumentado de 60px a 200px */
+    max-width: 80%; /* Para que no se salga en pantallas muy pequeñas */
+    height: auto;
+    margin-bottom: 25px;
+    /* Se quitó el border-radius: 50% para ver el logo completo */
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); /* Sombra para darle realce */
+}
+.login-title {
+    font-size: 26px; /* Un poco más grande */
+    font-weight: 800; /* Más negrita para acompañar al logo */
+    margin: 0 0 25px 0;
+    text-align: center; color: #333;
+    text-transform: uppercase; letter-spacing: 1px;
+}
 .login-box {
-    background-color: #f6f8fa; border: 1px solid #d8dee4; border-radius: 6px;
-    padding: 20px; width: 90%; max-width: 310px; margin-bottom: 15px;
+    background-color: #f6f8fa; border: 1px solid #d8dee4; border-radius: 8px;
+    padding: 25px; width: 90%; max-width: 340px; margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 .login-input {
-    width: 100%; padding: 5px 12px; font-size: 14px; height: 35px;
-    border: 1px solid #d0d7de; border-radius: 6px; margin-bottom: 15px; box-sizing: border-box;
+    width: 100%; padding: 12px; font-size: 16px; height: auto; /* Inputs más cómodos */
+    border: 1px solid #d0d7de; border-radius: 6px; margin-bottom: 20px; box-sizing: border-box;
 }
 .btn-login-primary {
-    width: 100%; background-color: #2da44e; color: #ffffff;
-    border: 1px solid rgba(27,31,35,0.15); border-radius: 6px;
-    padding: 5px 16px; font-size: 14px; font-weight: 600; cursor: pointer; height: 35px;
+    width: 100%; background-color: #D32F2F; /* Usamos el rojo de la marca */
+    color: #ffffff; border: none; border-radius: 6px;
+    padding: 12px; font-size: 16px; font-weight: 700; cursor: pointer; height: auto;
+    transition: background 0.2s;
 }
+.btn-login-primary:hover { background-color: #b71c1c; }
 
 /* ================= APP ================= */
 #app-container { display: none; } 
@@ -93,22 +111,22 @@ canvas#signature-pad {
 <body>
 
 <div id="login-screen">
-    <img src="logotipo-guaiapp.png" class="login-logo-img" alt="Logo">
-    <h2 style="color:#333; margin-top:0">Acceso Profesional</h2>
+    <img src="logotipo-guaiapp.png" class="login-logo-img" alt="GUA'I APP">
+    <h2 class="login-title">ACCESO PROFESIONAL</h2>
     <div class="login-box">
         <div id="step-email">
-            <label class="login-label">Correo electrónico</label>
-            <input type="email" id="loginEmail" class="login-input" placeholder="tu@email.com">
-            <button class="btn-login-primary" onclick="sendAuthCode()">Enviar Código de Acceso</button>
+            <label style="font-weight:bold; color:#333;">Correo electrónico</label>
+            <input type="email" id="loginEmail" class="login-input" placeholder="ejemplo@correo.com">
+            <button class="btn-login-primary" onclick="sendAuthCode()">VALIDAR LICENCIA</button>
         </div>
         <div id="step-code" style="display:none">
-            <label class="login-label" style="text-align:center">Código de verificación</label>
-            <input type="number" id="loginCode" class="login-input" style="text-align:center; font-weight:bold; letter-spacing:5px;">
-            <button class="btn-login-primary" onclick="verifyCode()">Entrar</button>
-            <p style="text-align:center; font-size:12px; margin-top:10px; cursor:pointer; color:blue" onclick="location.reload()">Cancelar</p>
+            <label style="text-align:center; font-weight:bold; color:#333;">Código de verificación</label>
+            <input type="number" id="loginCode" class="login-input" style="text-align:center; font-weight:bold; letter-spacing:5px; font-size:18px;">
+            <button class="btn-login-primary" onclick="verifyCode()">INGRESAR</button>
+            <p style="text-align:center; font-size:12px; margin-top:15px; cursor:pointer; color:#D32F2F; font-weight:bold;" onclick="location.reload()">Cancelar / Cambiar correo</p>
         </div>
     </div>
-    <div style="font-size:11px; color:#999">Gua'i App v3.0 - Seguridad RHAB Tech</div>
+    <div style="font-size:11px; color:#999; margin-top:20px;">Gua'i App v3.1 - Desarrollado por RHAB Tech</div>
 </div>
 
 <div id="app-container">
@@ -310,7 +328,6 @@ async function sendAuthCode() {
     Swal.fire({ title: 'Conectando...', didOpen: () => Swal.showLoading() });
 
     try {
-        // IMPORTANTE: REEMPLAZA ESTA URL CON TU DOMINIO REAL EN MAXDOMINIOS
         const response = await fetch('https://rhabinternationaltrading.com/guaiapp/enviar.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -346,7 +363,6 @@ const canvas = document.getElementById("signature-pad");
 const ctx = canvas.getContext("2d");
 let painting = false;
 
-// Ajustar tamaño del canvas
 function resizeCanvas() {
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
     canvas.width = canvas.offsetWidth * ratio;
@@ -364,38 +380,25 @@ function draw(e) {
     const rect = canvas.getBoundingClientRect();
     const x = (e.clientX || e.touches[0].clientX) - rect.left;
     const y = (e.clientY || e.touches[0].clientY) - rect.top;
-    
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "#000"; // Color firma
-    
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x, y);
+    ctx.lineWidth = 2; ctx.lineCap = "round"; ctx.strokeStyle = "#000";
+    ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
 }
-
-// Eventos Mouse y Touch
 canvas.addEventListener("mousedown", startPosition);
 canvas.addEventListener("mouseup", endPosition);
 canvas.addEventListener("mousemove", draw);
-canvas.addEventListener("touchstart", startPosition);
+canvas.addEventListener("touchstart", startPosition, {passive: false});
 canvas.addEventListener("touchend", endPosition);
-canvas.addEventListener("touchmove", draw);
-
-function clearSignature() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
+canvas.addEventListener("touchmove", draw, {passive: false});
+function clearSignature() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
 // --- 3. CÁLCULOS ---
 function calc() {
     const s1 = Number(document.getElementById("s1").value) || 0;
     const s2 = Number(document.getElementById("s2").value) || 0;
     const s3 = Number(document.getElementById("s3").value) || 0;
-    const total = s1 + s2 + s3; // s3 es el "otro" ahora
+    const total = s1 + s2 + s3;
     const iva = Math.round(total / 11);
     const sub = total - iva;
-
     document.getElementById("totalDisplay").innerText = total.toLocaleString("es-PY");
     document.getElementById("subDisplay").innerText = sub.toLocaleString("es-PY");
     document.getElementById("ivaDisplay").innerText = iva.toLocaleString("es-PY");
@@ -409,8 +412,6 @@ async function generatePDF(action) {
 
     // 1. Aplicar Color Personalizado
     const color = document.getElementById("pdfColor").value;
-    const rootStyles = document.documentElement.style;
-    rootStyles.setProperty('--theme-color', color); // No funciona directo en html2pdf a veces, así que inyectamos:
     document.querySelector(".tech-branding h1").style.color = color;
     document.querySelector(".pdf-table th").style.backgroundColor = color;
     document.querySelector(".grand-total").style.backgroundColor = color;
@@ -434,34 +435,18 @@ async function generatePDF(action) {
     // 3. Tabla (Leyendo Selects)
     const tbody = document.getElementById("pdf-table-body");
     tbody.innerHTML = "";
-    
-    // Función auxiliar para agregar fila
-    const addRow = (desc, val) => {
-        if(val > 0 && desc) tbody.innerHTML += `<tr><td>${desc}</td><td style="text-align:right">${val.toLocaleString("es-PY")}</td></tr>`;
-    };
+    const addRow = (desc, val) => { if(val > 0 && desc) tbody.innerHTML += `<tr><td>${desc}</td><td style="text-align:right">${val.toLocaleString("es-PY")}</td></tr>`; };
 
-    // Obtenemos valores de los selects o inputs
-    const d1 = document.getElementById("desc1").value;
-    const v1 = Number(document.getElementById("s1").value);
-    addRow(d1, v1);
+    addRow(document.getElementById("desc1").value, Number(document.getElementById("s1").value));
+    addRow(document.getElementById("desc2").value, Number(document.getElementById("s2").value));
+    addRow(document.getElementById("desc3").value || "Servicio Adicional", Number(document.getElementById("s3").value));
 
-    const d2 = document.getElementById("desc2").value;
-    const v2 = Number(document.getElementById("s2").value);
-    addRow(d2, v2);
-
-    const d3 = document.getElementById("desc3").value || "Servicio Adicional"; // Manual
-    const v3 = Number(document.getElementById("s3").value);
-    addRow(d3, v3);
-
-    // Totales
     document.getElementById("pdf-sub").innerText = data.sub.toLocaleString("es-PY");
     document.getElementById("pdf-iva").innerText = data.iva.toLocaleString("es-PY");
     document.getElementById("pdf-total").innerText = data.total.toLocaleString("es-PY");
 
     // 4. Insertar Firma
     const signatureImg = document.getElementById("pdf-signature-img");
-    // Verificar si el canvas no está vacío (muy básico, verifica si hay pixels negros)
-    // Para simplificar, siempre exportamos, si está vacío sale transparente.
     signatureImg.src = canvas.toDataURL(); 
     signatureImg.style.display = "block";
 
